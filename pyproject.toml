@@ -1,0 +1,91 @@
+[build-system]
+requires = ["setuptools >= 61.0.0", "wheel"]
+
+[project]
+name = "gradec"
+description = "Meta-analytic gradient decoding"
+license = {file = "LICENSE"}
+authors = [{ name = "Gradec developers" }]
+maintainers = [{ name = "Julio A Peraza", email = "jperaza@fiu.edu" }]
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Environment :: Console",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Topic :: Scientific/Engineering",
+]
+dependencies = [
+    "nimare",
+    "neuromaps",
+    "surfplot",
+]
+dynamic = ["version"]
+
+[project.urls]
+Homepage = "https://github.com/JulioAPeraza/gradec"
+
+[project.optional-dependencies]
+doc = [
+    "pydot >= 1.2.3",
+    "sphinx >= 1.8",
+    "sphinx-argparse",
+    "sphinx_rtd_theme>=0.5.2",
+]
+dev = [
+    "black",
+    "pre-commit",
+    "isort",
+    "flake8-pyproject",
+]
+# For testing of oldest usable versions of dependencies.
+min = [
+	"nimare==0.1.0",
+]
+test = [
+    "coverage",
+    "pytest",
+    "pytest-cov",
+    "pytest-env",
+]
+# Aliases
+docs = ["gradec[doc]"]
+tests = ["gradec[test]"]
+all = ["gradec[doc,test]"]
+
+[flake8]
+max-line-length = 99
+exclude = "*build/"
+ignore = ["E203", "E402", "E722", "W503"]
+docstring-convention = "numpy"
+
+[tool.isort]
+profile = "black"
+multi_line_output = 3
+
+[tool.black]
+line-length = 99
+target-version = ['py38']
+include = '\.pyi?$'
+exclude = '''
+(
+  /(
+      \.eggs         # exclude a few common directories in the
+    | \.git          # root of the project
+    | \.github
+    | \.hg
+    | \.pytest_cache
+    | _build
+    | build
+    | dist
+  )/
+  | versioneer.py
+  | gradec/_version.py
+)
+'''
