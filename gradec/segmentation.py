@@ -6,9 +6,14 @@ from sklearn.cluster import KMeans
 
 
 class Segmentation(metaclass=ABCMeta):
-    """Base class for segmentation methods."""
+    """Base class for segmentation methods.
+    Parameters
+    ----------
+    n_segments : int
+        Total number of segments.
+    """
 
-    def __init__(self, n_segments):
+    def __init__(self, n_segments=5):
         self.n_segments = n_segments
 
     def fit(self, gradient):
@@ -51,17 +56,8 @@ class Segmentation(metaclass=ABCMeta):
 class PCTSegmentation(Segmentation):
     """Percentile-based segmentation.
 
-    Thi method implements the original method described in (Margulies et al., 2016)
+    This method implements the original method described in (Margulies et al., 2016)
     in which the whole-brain gradient is segmented into equidistant gradient segments.
-
-    Parameters
-    ----------
-    gradient : numpy.ndarray
-        Gradient vector.
-    n_segments : int
-        Total number of segments.
-    min_n_segments : int
-        Minimum number of segments.
     """
 
     def _fit(self, gradient):
@@ -76,8 +72,6 @@ class PCTSegmentation(Segmentation):
         -------
         segments : list of numpy.ndarray
             List with thresholded gradients maps.
-        kde_labels : list of numpy.ndarray
-            Vertices labeled.
         labels :
         boundaries :
         peaks :
@@ -112,18 +106,9 @@ class PCTSegmentation(Segmentation):
 class KMeansSegmentation(Segmentation):
     """KMeans-based segmentation.
 
-    This method relied on 1D k-means clustering, which has previously
+    This method relies on 1D k-means clustering, which has previously
     been used to define clusters of functional connectivity matrices
     to establish a brain-wide parcellation.
-
-    Parameters
-    ----------
-    gradient : numpy.ndarray
-        Gradient vector.
-    n_segments : int
-        Total number of segments.
-    min_n_segments : int
-        Minimum number of segments.
     """
 
     def _fit(self, gradient):
