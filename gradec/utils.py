@@ -1,9 +1,15 @@
 """Miscellaneous functions used for analyses."""
+import logging
+import multiprocessing as mp
+import os.path as op
+
 import nibabel as nib
 import numpy as np
 from neuromaps.datasets import fetch_atlas
 from nibabel.gifti import GiftiDataArray
 from sklearn.metrics import pairwise_distances
+
+LGR = logging.getLogger(__name__)
 
 
 def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
@@ -85,3 +91,25 @@ def affinity(matrix, sparsity):
     matrix = 1 - pairwise_distances(matrix, metric="cosine")
 
     return matrix
+
+
+def get_resource_path():
+    """Return the path to general resources, terminated with separator.
+
+    Resources are kept outside package folder in "datasets".
+    Based on function by Yaroslav Halchenko used in Neurosynth Python package.
+    """
+    return op.abspath(op.join(op.dirname(__file__), "resources") + op.sep)
+
+
+def _check_ncores(n_cores):
+    """Check number of cores used for method. Taken from nimare.utils."""
+    if n_cores <= 0:
+        n_cores = mp.cpu_count()
+    elif n_cores > mp.cpu_count():
+        LGR.warning(
+            f"Desired number of cores ({n_cores}) greater than number "
+            f"available ({mp.cpu_count()}). Setting to {mp.cpu_count()}."
+        )
+        n_cores = mp.cpu_count()
+    return n_cores
