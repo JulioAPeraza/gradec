@@ -1,7 +1,7 @@
 """Miscellaneous functions used for analyses."""
 import logging
 import multiprocessing as mp
-import os.path as op
+import os
 
 import nibabel as nib
 import numpy as np
@@ -10,6 +10,38 @@ from nibabel.gifti import GiftiDataArray
 from sklearn.metrics import pairwise_distances
 
 LGR = logging.getLogger(__name__)
+
+
+def get_data_dir(data_dir=None):
+    """
+    Gets path to gradec data directory
+
+    Parameters
+    ----------
+    data_dir : str, optional
+        Path to use as data directory. If not specified, will check for
+        environmental variable 'GRADEC_DATA'; if that is not set, will
+        use `~/gradec-data` instead. Default: None
+
+    Returns
+    -------
+    data_dir : str
+        Path to use as data directory
+
+     Notes
+    -----
+    Taken from Neuromaps.
+    https://github.com/netneurolab/neuromaps/blob/abf5a5c3d3d011d644b56ea5c6a3953cedd80b37/
+    neuromaps/datasets/utils.py#LL91C1-L115C20
+    """
+
+    if data_dir is None:
+        data_dir = os.environ.get("GRADEC_DATA", os.path.join("~", "gradec-data"))
+    data_dir = os.path.expanduser(data_dir)
+    if not os.path.exists(data_dir):
+        os.makedirs(data_dir)
+
+    return data_dir
 
 
 def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
@@ -99,7 +131,7 @@ def get_resource_path():
     Resources are kept outside package folder in "datasets".
     Based on function by Yaroslav Halchenko used in Neurosynth Python package.
     """
-    return op.abspath(op.join(op.dirname(__file__), "resources") + op.sep)
+    return os.path.abspath(os.path.join(os.path.dirname(__file__), "resources") + os.path.sep)
 
 
 def _check_ncores(n_cores):
