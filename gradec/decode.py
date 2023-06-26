@@ -5,13 +5,20 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 import pandas as pd
+from nilearn import masking
 from nimare.annotate.gclda import GCLDAModel
-from nimare.extract import download_abstracts, fetch_neuroquery, fetch_neurosynth
+from nimare.extract import (download_abstracts, fetch_neuroquery,
+                            fetch_neurosynth)
 from nimare.io import convert_neurosynth_to_dataset
 from nimare.meta.cbma.mkda import MKDAChi2
+from nimare.results import MetaResult
 from nimare.stats import pearson
 
+from gradec.fetcher import (_fetch_dataset, _fetch_features, _fetch_metamaps,
+                            _fetch_model, _fetch_nullmaps)
 from gradec.model import _get_counts, annotate_lda
+from gradec.stats import _permute_metamaps
+from gradec.transform import _mni152_to_fslr
 from gradec.utils import _check_ncores
 
 
@@ -45,42 +52,10 @@ def _get_dataset(dset_nm, basepath):
         annotations_files=dataset_db["features"],
     )
     dset.update_path(basepath)
-    dset = download_abstracts(dset, "jpera054@fiu.edu")
 
-
-def _train_decoder(dset, dset_nm, model_nm, n_topics, n_cores):
-    feature_group = (
-        "terms_abstract_tfidf" if dset_nm == "neurosynth" else "neuroquery6308_combined_tfidf"
-    )
-    frequency_threshold = 0.001 if model_nm == "term" else 0.05
-
-    if (model_nm == "term") or (model_nm == "lda"):
-        decoder = CorrelationDecoder(
-            frequency_threshold=frequency_threshold,
-            meta_estimator=MKDAChi2,
-            feature_group=feature_group,
-            target_image="z_desc-specificity",
-            n_cores=n_cores,
-        )
-        decoder.fit(dset)
-        metamap_arr = decoder.images_
-    elif model_nm == "gclda":
-        counts_df = _get_counts(dset, dset_nm)
-
-        gclda_model = GCLDAModel(
-            counts_df,
-            dset.coordinates,
-            mask=dset.masker.mask_img,
-            n_topics=n_topics,
-            n_regions=4,
-            symmetric=True,
-            n_cores=n_cores,
-        )
-        gclda_model.fit(n_iters=1000, loglikely_freq=100)
-
-        metamap_arr = gclda_model.p_voxel_g_topic_.T
-
-    return metamap_arr
+    if dset_nm == "neurosynth":
+        # Download abstracts only for Neurosynth
+        dset = download_abstracts(dset, "jpera054@fiu.edu")
 
 
 class Decoder(ABCMeta):
@@ -90,103 +65,103 @@ class Decoder(ABCMeta):
         self,
         model_nm="lda",
         n_topics=200,
+        use_fetchers=True,
         basepath=None,
         n_cores=1,
     ):
         self.model_nm = model_nm
         self.n_topics = n_topics
+        self.use_fetchers = use_fetchers
         self.basepath = op.abspath(basepath) if basepath else op.abspath(".")
         self.n_cores = _check_ncores(n_cores)
 
     @abstractmethod
-    def _fit(self, dset_nm):
+    def transform(self, dset_nm):
         """Apply decoding to dataset and output results.
 
         Must return a DataFrame, with one row for each feature.
         """
 
-    def fit(self, dset_nm):
-        self.dset_nm = dset_nm
-        self.dset = _get_dataset(dset_nm, self.basepath)
-        if self.model_nm == "lda":
-            self.dset = annotate_lda(
-                self.dset,
-                dset_nm,
-                n_topics=self.n_topics,
+    def _get_features(self):
+        if self.model_nm in ["term", "lda"]:
+            return [f.split("__")[-1] for f in self.decoder.features_]
+        vocabulary = np.array(self.model.vocabulary)
+        return list(vocabulary)
+
+    def _train_decoder(self):
+        feature_group = (
+            "terms_abstract_tfidf"
+            if self.dset_nm == "neurosynth"
+            else "neuroquery6308_combined_tfidf"
+        )
+        frequency_threshold = 0.001 if self.model_nm == "term" else 0.05
+
+        if (self.model_nm == "term") or (self.model_nm == "lda"):
+            decoder = CorrelationDecoder(
+                frequency_threshold=frequency_threshold,
+                meta_estimator=MKDAChi2,
+                feature_group=feature_group,
+                target_image="z_desc-specificity",
                 n_cores=self.n_cores,
             )
+            decoder.fit(self.dset)
+            self.decoder = decoder
 
-        self.metamap_arr = _train_decoder(
-            self.dset,
-            self.dset_nm,
-            self.model_nm,
-            self.n_topics,
-            self.n_cores,
-        )
+            metamaps_arr = decoder.images_
+            metamaps = decoder.masker.inverse_transform(metamaps_arr)
+
+        elif self.model_nm == "gclda":
+            counts_df = _get_counts(self.dset, self.dset_nm)
+
+            gclda_model = GCLDAModel(
+                counts_df,
+                self.dset.coordinates,
+                mask=self.dset.masker.mask_img,
+                n_topics=self.n_topics,
+                n_regions=4,
+                symmetric=True,
+                n_cores=self.n_cores,
+            )
+            gclda_model.fit(n_iters=1000, loglikely_freq=100)
+            self.model = gclda_model
+
+            metamaps_arr = gclda_model.p_voxel_g_topic_.T
+            metamaps = masking.unmask(metamaps_arr, gclda_model.mask)
+
+        return metamaps
+
+    def fit(self, dset_nm):
+        self.dset_nm = dset_nm
+        if self.use_fetchers:
+            self.dset = _fetch_dataset(dset_nm, self.basepath)
+            self.model = _fetch_model(self.dset_nm, self.model_nm)
+            # self.decoder = _fetch_decoder(self.dset_nm, self.model_nm)
+            features = _fetch_features(self.dset_nm, self.model_nm)
+            metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm)
+            metamaps_pmted_fslr = _fetch_nullmaps(self.dset_nm, self.model_nm)
+        else:
+            self.dset = _get_dataset(dset_nm, self.basepath)
+
+            if self.model_nm == "lda":
+                self.dset, self.model = annotate_lda(
+                    self.dset,
+                    dset_nm,
+                    n_topics=self.n_topics,
+                    n_cores=self.n_cores,
+                )
+            metamaps = self._train_decoder()
+            metamaps_fslr = _mni152_to_fslr(metamaps, self.basepath)
+            metamaps_pmted_fslr = _permute_metamaps(metamaps_fslr)
+            features = self.get_features()
+
+        self.maps_ = list(metamaps_fslr)
+        self.features_ = features
+        self.null_maps_ = metamaps_pmted_fslr
+
 
 
 class CorrelationDecoder(Decoder):
-    """Decode an unthresholded image by correlating the image with meta-analytic maps.
-
-    .. versionchanged:: 0.1.0
-
-        * New method: `load_imgs`. Load pre-generated meta-analytic maps for decoding.
-
-        * New attribute: `results_`. MetaResult object containing masker, meta-analytic maps,
-          and tables. This attribute replaces `masker`, `features_`, and `images_`.
-
-    .. versionchanged:: 0.0.13
-
-        * New parameter: `n_cores`. Number of cores to use for parallelization.
-
-    .. versionchanged:: 0.0.12
-
-        * Remove low-memory option in favor of sparse arrays.
-
-    Parameters
-    ----------
-    feature_group : :obj:`str`, optional
-        Feature group
-    features : :obj:`list`, optional
-        Features
-    frequency_threshold : :obj:`float`, optional
-        Frequency threshold
-    meta_estimator : :class:`~nimare.base.CBMAEstimator`, optional
-        Meta-analysis estimator. Default is :class:`~nimare.meta.mkda.MKDAChi2`.
-    target_image : :obj:`str`, optional
-        Name of meta-analysis results image to use for decoding.
-    n_cores : :obj:`int`, optional
-        Number of cores to use for parallelization.
-        If <=0, defaults to using all available cores.
-        Default is 1.
-
-    Warnings
-    --------
-    Coefficients from correlating two maps have very large degrees of freedom,
-    so almost all results will be statistically significant. Do not attempt to
-    evaluate results based on significance.
-    """
-
-    _required_inputs = {
-        "coordinates": ("coordinates", None),
-        "annotations": ("annotations", None),
-    }
-
-    def __init__(
-        self,
-        feature_group=None,
-        features=None,
-        frequency_threshold=0.001,
-        meta_estimator=None,
-        target_image="z_desc-specificity",
-        n_cores=1,
-    ):
-        self.feature_group = feature_group
-        self.features = features
-        self.frequency_threshold = frequency_threshold
-        self.meta_estimator = meta_estimator
-        self.target_image = target_image
-        self.n_cores = _check_ncores(n_cores)
+    """Decode an unthresholded image by correlating the image with meta-analytic maps."""
 
     def transform(self, img):
         """Correlate target image with each feature-specific meta-analytic map.
@@ -201,11 +176,7 @@ class CorrelationDecoder(Decoder):
         out_df : :obj:`pandas.DataFrame`
             DataFrame with one row for each feature, an index named "feature", and one column: "r".
         """
-        if not hasattr(self, "results_"):
-            raise AttributeError(
-                f"This {self.__class__.__name__} instance is not fitted yet. "
-                "Call 'fit' or 'load_imgs' before using 'transform'."
-            )
+        # metamaps_fslr_perm_arr = _permute_metamaps(metamaps_fslr_arr)
 
         # Make sure we return a copy of the MetaResult
         results = self.results_.copy()

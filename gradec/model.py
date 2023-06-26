@@ -1,14 +1,12 @@
 """Models for Gradec."""
 import os.path as op
-from glob import glob
 
 import pandas as pd
 from nimare.annotate.lda import LDAModel
-from nimare.utils import get_resource_path as get_nimare_resource_path
-from scipy.sparse import load_npz
+from nimare.utils import get_resource_path
 from sklearn.feature_extraction.text import CountVectorizer, TfidfVectorizer
 
-from gradec.utils import get_resource_path as get_gradec_resource_path
+from gradec.fetcher import _fetch_neuroquery_counts
 
 
 def _generate_counts(
@@ -46,7 +44,7 @@ def _generate_counts(
 
     ids = text_df["id"].tolist()
     text = text_df[text_column].tolist()
-    stoplist = op.join(get_nimare_resource_path(), "neurosynth_stoplist.txt")
+    stoplist = op.join(get_resource_path(), "neurosynth_stoplist.txt")
     with open(stoplist, "r") as fo:
         stop_words = fo.read().splitlines()
 
@@ -92,15 +90,7 @@ def _get_counts(dataset, dataset_nm):
         )
 
     elif dataset_nm == "neuroquery":
-        counts_dir = op.join(get_gradec_resource_path, "neuroquery", "neuroquery_counts")
-        counts_arr_fns = glob(op.join(counts_dir, "*_features.npz"))
-        counts_sparse = None
-        for file_i, counts_arr_fn in enumerate(counts_arr_fns):
-            if file_i == 0:
-                counts_sparse = load_npz(counts_arr_fn)
-            else:
-                counts_sparse = counts_sparse + load_npz(counts_arr_fn)
-        counts_arr = counts_sparse.todense()
+        counts_arr = _fetch_neuroquery_counts()
 
         # Generate the IDs from original id list (without sorting)
         ids = dataset.annotations.sort_index()["id"].tolist()
@@ -146,5 +136,6 @@ def annotate_lda(dataset, dataset_nm, n_topics=200, n_cores=1):
     counts_df = _get_counts(dataset, dataset_nm)
 
     model = LDAModel(n_topics=n_topics, max_iter=1000, n_cores=n_cores)
-    new_dataset = model.fit(dataset, counts_df)
-    return new_dataset
+    dataset = model.fit(dataset, counts_df)
+    
+    return dataset, model
