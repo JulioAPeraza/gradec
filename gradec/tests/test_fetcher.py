@@ -1,5 +1,3 @@
-import os
-
 import pytest
 
 from gradec.fetcher import _fetch_features

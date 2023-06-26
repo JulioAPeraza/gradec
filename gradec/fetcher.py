@@ -16,24 +16,24 @@ OSF_URL = "https://osf.io/{}/download"
 OSF_DICT = {
     "neurosynth_dataset.pkl.gz": "",
     "neuroquery_dataset.pkl.gz": "",
-    "term_neurosynth_metamaps.npy": "",
+    "term_neurosynth_metamaps.npy": "sdzvw",
     "term_neurosynth_features.csv": "hyjrk",
     "term_neurosynth_decoder.pkl.gz": "fkldfk2",
-    "term_neuroquery_metamaps.npy": "",
+    "term_neuroquery_metamaps.npy": "7kwj2",
     "term_neuroquery_features.csv": "xtjna",
     "term_neuroquery_decoder.pkl.gz": "",
-    "lda_neurosynth_metamaps.npy": "",
+    "lda_neurosynth_metamaps.npy": "zwh3n",
     "lda_neurosynth_features.csv": "ve3nj",
     "lda_neurosynth_model.pkl.gz": "",
     "lda_neurosynth_decoder.pkl.gz": "",
-    "lda_neuroquery_metamaps.npy": "",
+    "lda_neuroquery_metamaps.npy": "axyjb",
     "lda_neuroquery_features.csv": "u68w7",
     "lda_neuroquery_model.pkl.gz": "",
     "lda_neuroquery_decoder.pkl.gz": "",
-    "gclda_neurosynth_metamaps.npy": "",
+    "gclda_neurosynth_metamaps.npy": "cruab",
     "gclda_neurosynth_features.csv": "jcrkd",
     "gclda_neurosynth_model.pkl.gz": "",
-    "gclda_neuroquery_metamaps.npy": "",
+    "gclda_neuroquery_metamaps.npy": "h6psa",
     "gclda_neuroquery_features.csv": "trcxs",
     "gclda_neuroquery_model.pkl.gz": "",
     "spinsamples_fslr.npy": "nukdt",
@@ -91,14 +91,15 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     features_fn = os.path.join(data_dir, filename)
 
-    temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
-    os.rename(temp_fn, features_fn)
-    df = pd.read_csv(features_fn)
+    if not os.path.exists(features_fn):
+        temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
+        os.rename(temp_fn, features_fn)
 
+    df = pd.read_csv(features_fn)
     return df.values.tolist()
 
 
-def _fetch_nullmaps(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
+def _fetch_metamaps(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     """Fetch meta-analytic maps from OSF.
 
     Parameters
@@ -128,8 +129,9 @@ def _fetch_nullmaps(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     metamaps_fn = os.path.join(data_dir, filename)
 
-    temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
-    os.rename(temp_fn, metamaps_fn)
+    if not os.path.exists(metamaps_fn):
+        temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
+        os.rename(temp_fn, metamaps_fn)
 
     return np.load(metamaps_fn)
 
@@ -272,7 +274,3 @@ def _fetch_decoder(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
 
     decoder_file = gzip.open(decoder_fn, "rb")
     return pickle.load(decoder_file)
-
-
-def _fetch_metamaps(dset_nm, model_nm, data_dir=None):
-    pass
