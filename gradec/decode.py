@@ -7,19 +7,24 @@ import numpy as np
 import pandas as pd
 from nilearn import masking
 from nimare.annotate.gclda import GCLDAModel
-from nimare.extract import (download_abstracts, fetch_neuroquery,
-                            fetch_neurosynth)
+from nimare.extract import download_abstracts, fetch_neuroquery, fetch_neurosynth
 from nimare.io import convert_neurosynth_to_dataset
 from nimare.meta.cbma.mkda import MKDAChi2
 from nimare.results import MetaResult
 from nimare.stats import pearson
 
-from gradec.fetcher import (_fetch_dataset, _fetch_features, _fetch_metamaps,
-                            _fetch_model, _fetch_nullmaps)
+from gradec.fetcher import (
+    _fetch_dataset,
+    _fetch_features,
+    _fetch_metamaps,
+    _fetch_model,
+)
 from gradec.model import _get_counts, annotate_lda
 from gradec.stats import _permute_metamaps
 from gradec.transform import _mni152_to_fslr
 from gradec.utils import _check_ncores
+
+N_TOP_WORDS = 3  # Number of words to show on LDA-based decoders
 
 
 def _get_dataset(dset_nm, basepath):
@@ -58,7 +63,7 @@ def _get_dataset(dset_nm, basepath):
         dset = download_abstracts(dset, "jpera054@fiu.edu")
 
 
-class Decoder(ABCMeta):
+class Decoder(metaclass=ABCMeta):
     """Base class for decoders in :mod:`~gradec.decode`."""
 
     def __init__(
@@ -133,12 +138,12 @@ class Decoder(ABCMeta):
     def fit(self, dset_nm):
         self.dset_nm = dset_nm
         if self.use_fetchers:
-            self.dset = _fetch_dataset(dset_nm, self.basepath)
-            self.model = _fetch_model(self.dset_nm, self.model_nm)
+            # self.dset = _fetch_dataset(dset_nm, self.basepath)
+            # self.model = _fetch_model(self.dset_nm, self.model_nm)
             # self.decoder = _fetch_decoder(self.dset_nm, self.model_nm)
-            features = _fetch_features(self.dset_nm, self.model_nm)
-            metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm)
-            metamaps_pmted_fslr = _fetch_nullmaps(self.dset_nm, self.model_nm)
+            features = _fetch_features(self.dset_nm, self.model_nm, self.basepath)
+            metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm, self.basepath)
+            # metamaps_pmted_fslr = _fetch_nullmaps(self.dset_nm, self.model_nm)
         else:
             self.dset = _get_dataset(dset_nm, self.basepath)
 
@@ -154,16 +159,18 @@ class Decoder(ABCMeta):
             metamaps_pmted_fslr = _permute_metamaps(metamaps_fslr)
             features = self.get_features()
 
-        self.maps_ = list(metamaps_fslr)
-        self.features_ = features
-        self.null_maps_ = metamaps_pmted_fslr
-
+        self.maps_ = metamaps_fslr
+        if self.model_nm in ["lda", "gclda"]:
+            self.features_ = ["_".join(feature[:N_TOP_WORDS]) for feature in features]
+        else:
+            self.features_ = [feature[0] for feature in features]
+        # self.null_maps_ = metamaps_pmted_fslr
 
 
 class CorrelationDecoder(Decoder):
     """Decode an unthresholded image by correlating the image with meta-analytic maps."""
 
-    def transform(self, img):
+    def transform(self, grad_maps):
         """Correlate target image with each feature-specific meta-analytic map.
 
         Parameters
@@ -179,17 +186,9 @@ class CorrelationDecoder(Decoder):
         # metamaps_fslr_perm_arr = _permute_metamaps(metamaps_fslr_arr)
 
         # Make sure we return a copy of the MetaResult
-        results = self.results_.copy()
-        features = list(results.maps.keys())
-        images = np.array(list(results.maps.values()))
-
-        img_vec = results.masker.transform(img)
-        corrs = pearson(img_vec, images)
-        out_df = pd.DataFrame(index=features, columns=["r"], data=corrs)
+        corrs = [pearson(grad_map, self.maps_) for grad_map in grad_maps]
+        data = np.array(corrs).T
+        out_df = pd.DataFrame(index=self.features_, data=data)
         out_df.index.name = "feature"
-
-        # Update self.results_ to include the new table
-        results.tables["correlation"] = out_df
-        self.results_ = results
 
         return out_df
