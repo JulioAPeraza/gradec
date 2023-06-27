@@ -26,8 +26,8 @@ def _permtest_pearson(grad_map, metamaps, spinsamples):
     corrs_null = [pearson(grad_map_null[:, p_i], metamaps) for p_i in range(n_perm)]
 
     # Calculate p-values
-    n_extreme_corrs = np.sum(np.abs(corrs) >= np.abs(corrs_null), axis=0)
-    pvals = n_extreme_corrs / n_perm
+    n_extreme_corrs = np.sum(np.abs(corrs_null) >= np.abs(corrs), axis=0)
+    pvals = n_extreme_corrs / (n_perm + 1)
     corr_pvals = fdr(pvals)
 
     return corrs, pvals, corr_pvals
