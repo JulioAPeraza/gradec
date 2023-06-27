@@ -1,6 +1,7 @@
+import numpy as np
 import pytest
 
-from gradec.fetcher import _fetch_features
+from gradec.fetcher import _fetch_features, _fetch_metamaps, _fetch_spinsamples
 
 
 @pytest.mark.parametrize(
@@ -24,3 +25,13 @@ def test_fetch_features(tmp_path_factory, dset_nm, model_nm):
     assert len(features) > 0
     assert isinstance(features[0], list)
     assert len(features[0]) > 0
+
+
+def test_fetch_spinsamples(tmp_path_factory):
+    """Test fetching spinsamples from OSF."""
+    # tmpdir = tmp_path_factory.mktemp("test_fetch_spinsamples")
+    tmpdir = "/Users/jperaza/Desktop/tes_fetcher"
+
+    spinsamples = _fetch_spinsamples(data_dir=tmpdir, resume=True, verbose=9)
+    assert isinstance(spinsamples, np.ndarray)
+    assert spinsamples.shape == (59412, 1000)
