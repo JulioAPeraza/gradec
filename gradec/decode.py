@@ -5,24 +5,24 @@ from abc import ABCMeta, abstractmethod
 
 import numpy as np
 import pandas as pd
+from joblib import Parallel, delayed
 from nilearn import masking
 from nimare.annotate.gclda import GCLDAModel
 from nimare.extract import download_abstracts, fetch_neuroquery, fetch_neurosynth
 from nimare.io import convert_neurosynth_to_dataset
 from nimare.meta.cbma.mkda import MKDAChi2
-from nimare.results import MetaResult
-from nimare.stats import pearson
 
 from gradec.fetcher import (
     _fetch_dataset,
     _fetch_features,
     _fetch_metamaps,
     _fetch_model,
+    _fetch_spinsamples,
 )
 from gradec.model import _get_counts, annotate_lda
-from gradec.stats import _permute_metamaps
+from gradec.stats import _permtest_pearson, _permute_metamaps
 from gradec.transform import _mni152_to_fslr
-from gradec.utils import _check_ncores
+from gradec.utils import _check_ncores, _reorder_matrix
 
 N_TOP_WORDS = 3  # Number of words to show on LDA-based decoders
 
@@ -143,7 +143,7 @@ class Decoder(metaclass=ABCMeta):
             # self.decoder = _fetch_decoder(self.dset_nm, self.model_nm)
             features = _fetch_features(self.dset_nm, self.model_nm, self.basepath)
             metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm, self.basepath)
-            # metamaps_pmted_fslr = _fetch_nullmaps(self.dset_nm, self.model_nm)
+            spinsamples_fslr = _fetch_spinsamples(self.basepath)
         else:
             self.dset = _get_dataset(dset_nm, self.basepath)
 
@@ -164,13 +164,14 @@ class Decoder(metaclass=ABCMeta):
             self.features_ = ["_".join(feature[:N_TOP_WORDS]) for feature in features]
         else:
             self.features_ = [feature[0] for feature in features]
-        # self.null_maps_ = metamaps_pmted_fslr
+
+        self.spinsamples_ = spinsamples_fslr
 
 
 class CorrelationDecoder(Decoder):
     """Decode an unthresholded image by correlating the image with meta-analytic maps."""
 
-    def transform(self, grad_maps):
+    def transform(self, grad_maps, reorder=True):
         """Correlate target image with each feature-specific meta-analytic map.
 
         Parameters
@@ -186,9 +187,31 @@ class CorrelationDecoder(Decoder):
         # metamaps_fslr_perm_arr = _permute_metamaps(metamaps_fslr_arr)
 
         # Make sure we return a copy of the MetaResult
-        corrs = [pearson(grad_map, self.maps_) for grad_map in grad_maps]
-        data = np.array(corrs).T
-        out_df = pd.DataFrame(index=self.features_, data=data)
-        out_df.index.name = "feature"
+        corrs_lst, pvals_lst, corr_pvals_lst = zip(
+            *Parallel(n_jobs=self.n_cores)(
+                delayed(_permtest_pearson)(grad_map, self.maps_, self.spinsamples_)
+                for grad_map in grad_maps
+            )
+        )
 
-        return out_df
+        corrs_data = np.array(corrs_lst).T
+        pvals_data = np.array(pvals_lst).T
+        corr_pvals_data = np.array(corr_pvals_lst).T
+
+        features = self.features_
+        if reorder:
+            index = _reorder_matrix(corrs_data, "single")
+
+            corrs_data = corrs_data[index, :]
+            pvals_data = pvals_data[index, :]
+            corr_pvals_data = corr_pvals_data[index, :]
+            features = [features[i] for i in index]
+
+        corrs_df = pd.DataFrame(index=features, data=corrs_data)
+        pvals_df = pd.DataFrame(index=features, data=pvals_data)
+        corr_pvals_df = pd.DataFrame(index=features, data=corr_pvals_data)
+        corrs_df.index.name = "feature"
+        pvals_df.index.name = "feature"
+        corr_pvals_df.index.name = "feature"
+
+        return corrs_df, pvals_df, corr_pvals_df
