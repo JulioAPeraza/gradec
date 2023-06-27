@@ -45,7 +45,7 @@ def _get_osf_url(filename):
     return OSF_URL.format(osf_id)
 
 
-def _fetch_neuroquery_counts(data_dir=None):
+def _fetch_neuroquery_counts(data_dir=None, overwrite=False):
     data_dir = get_data_dir(data_dir)
     counts_dir = os.path.join(data_dir, "meta-analysis", "neuroquery", "neuroquery_counts")
     os.makedirs(counts_dir, exist_ok=True)
@@ -61,7 +61,7 @@ def _fetch_neuroquery_counts(data_dir=None):
     return counts_sparse.todense()
 
 
-def _fetch_features(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
+def _fetch_features(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch features from OSF.
 
     Parameters
@@ -91,7 +91,7 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     features_fn = os.path.join(data_dir, filename)
 
-    if not os.path.exists(features_fn):
+    if not os.path.exists(features_fn) or overwrite:
         temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
         os.rename(temp_fn, features_fn)
 
@@ -99,7 +99,7 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     return df.values.tolist()
 
 
-def _fetch_metamaps(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
+def _fetch_metamaps(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch meta-analytic maps from OSF.
 
     Parameters
@@ -129,14 +129,14 @@ def _fetch_metamaps(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     metamaps_fn = os.path.join(data_dir, filename)
 
-    if not os.path.exists(metamaps_fn):
+    if not os.path.exists(metamaps_fn) or overwrite:
         temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
         os.rename(temp_fn, metamaps_fn)
 
     return np.load(metamaps_fn)
 
 
-def _fetch_spinsamples(data_dir=None, resume=True, verbose=1):
+def _fetch_spinsamples(data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch spin samples from OSF.
 
     Parameters
@@ -158,17 +158,18 @@ def _fetch_spinsamples(data_dir=None, resume=True, verbose=1):
     """
     data_dir = get_data_dir(data_dir)
 
-    filename = "spinsamples.npy"
+    filename = "spinsamples_fslr.npy"
     url = _get_osf_url(filename)
     nullsamples_fn = os.path.join(data_dir, filename)
 
-    temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
-    os.rename(temp_fn, nullsamples_fn)
+    if not os.path.exists(nullsamples_fn) or overwrite:
+        temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
+        os.rename(temp_fn, nullsamples_fn)
 
     return np.load(nullsamples_fn)
 
 
-def _fetch_dataset(dset_nm, data_dir=None, resume=True, verbose=1):
+def _fetch_dataset(dset_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch NiMARE dataset object from OSF.
 
     Parameters
@@ -196,13 +197,14 @@ def _fetch_dataset(dset_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     dset_fn = os.path.join(data_dir, filename)
 
-    temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
-    os.rename(temp_fn, dset_fn)
+    if not os.path.exists(dset_fn) or overwrite:
+        temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
+        os.rename(temp_fn, dset_fn)
 
     return Dataset.load(dset_fn)
 
 
-def _fetch_model(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
+def _fetch_model(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch features from OSF.
 
     Parameters
@@ -232,14 +234,15 @@ def _fetch_model(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     model_fn = os.path.join(data_dir, filename)
 
-    temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
-    os.rename(temp_fn, model_fn)
+    if not os.path.exists(model_fn) or overwrite:
+        temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
+        os.rename(temp_fn, model_fn)
 
     model_file = gzip.open(model_fn, "rb")
     return pickle.load(model_file)
 
 
-def _fetch_decoder(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
+def _fetch_decoder(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch features from OSF.
 
     Parameters
@@ -269,8 +272,9 @@ def _fetch_decoder(dset_nm, model_nm, data_dir=None, resume=True, verbose=1):
     url = _get_osf_url(filename)
     decoder_fn = os.path.join(data_dir, filename)
 
-    temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
-    os.rename(temp_fn, decoder_fn)
+    if not os.path.exists(decoder_fn) or overwrite:
+        temp_fn = _fetch_file(url, data_dir, resume=resume, verbose=verbose)
+        os.rename(temp_fn, decoder_fn)
 
     decoder_file = gzip.open(decoder_fn, "rb")
     return pickle.load(decoder_file)
