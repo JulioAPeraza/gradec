@@ -7,6 +7,7 @@ from sklearn.cluster import KMeans
 
 class Segmentation(metaclass=ABCMeta):
     """Base class for segmentation methods.
+
     Parameters
     ----------
     n_segments : int
@@ -63,7 +64,7 @@ class PCTSegmentation(Segmentation):
     def _fit(self, gradient):
         """Fit Segmentation to gradient.
 
-         Parameters
+        Parameters
         ----------
         gradient : numpy.ndarray
             Gradient vector.
@@ -114,7 +115,7 @@ class KMeansSegmentation(Segmentation):
     def _fit(self, gradient):
         """Fit Segmentation to gradient.
 
-         Parameters
+        Parameters
         ----------
         gradient : numpy.ndarray
             Gradient vector.

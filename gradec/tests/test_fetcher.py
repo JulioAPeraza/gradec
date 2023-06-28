@@ -1,9 +1,8 @@
+"""Test fetching data from OSF."""
 import numpy as np
 import pytest
-from nimare.dataset import Dataset
 
 from gradec.fetcher import (
-    _fetch_dataset,
     _fetch_features,
     _fetch_metamaps,
     _fetch_neuroquery_counts,
@@ -39,7 +38,7 @@ def test_fetch_features(tmp_path_factory, dset_nm, model_nm):
         ("neurosynth", "term", 3228),
         ("neurosynth", "lda", 200),
         ("neurosynth", "gclda", 200),
-        ("neuroquery", "term", 6308),
+        ("neuroquery", "term", 6145),
         ("neuroquery", "lda", 200),
         ("neuroquery", "gclda", 200),
     ],

@@ -1,4 +1,4 @@
-"""Fetch data"""
+"""Fetch data."""
 import gzip
 import hashlib
 import os
@@ -30,7 +30,7 @@ OSF_DICT = {
     "gclda_neuroquery_metamaps.npz": "t5k2b",
     "gclda_neuroquery_features.csv": "trcxs",
     "gclda_neuroquery_model.pkl.gz": "vsm65",
-    "spinsamples_fslr.npz": "nukdt",
+    "spinsamples_fslr.npz": "q5yv6",
     "neuroquery_counts": "p39mg",
 }
 

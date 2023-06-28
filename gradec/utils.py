@@ -55,8 +55,7 @@ def _reorder_matrix(mat, reorder):
 
 
 def get_data_dir(data_dir=None):
-    """
-    Gets path to gradec data directory
+    """Gets path to gradec data directory.
 
     Parameters
     ----------
@@ -70,13 +69,12 @@ def get_data_dir(data_dir=None):
     data_dir : str
         Path to use as data directory
 
-     Notes
+    Notes
     -----
     Taken from Neuromaps.
     https://github.com/netneurolab/neuromaps/blob/abf5a5c3d3d011d644b56ea5c6a3953cedd80b37/
     neuromaps/datasets/utils.py#LL91C1-L115C20
     """
-
     if data_dir is None:
         data_dir = os.environ.get("GRADEC_DATA", os.path.join("~", "gradec-data"))
     data_dir = os.path.expanduser(data_dir)
@@ -87,7 +85,8 @@ def get_data_dir(data_dir=None):
 
 
 def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
-    """Remove medial wall from data in fsLR space
+    """Remove medial wall from data in fsLR space.
+
     Data in 32k fs_LR space (e.g., Human Connectome Project data) often in
     GIFTI format include the medial wall in their data arrays, which results
     in a total of 64984 vertices across hemispheres. This function removes
@@ -101,15 +100,16 @@ def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
     data : numpy.ndarray
         Surface vertices. Must have exactly 32492 vertices per hemisphere.
     join : bool
-        Return left and right hemipsheres in the same arrays. Default: True
+        Return left and right hemipsheres in the same arrays. Default: True.
+
     Returns
     -------
     numpy.ndarray
-        Vertices with medial wall excluded (59412 vertices total)
-    Raises
-    ------
+        Vertices with medial wall excluded (59412 vertices total).
+
     ValueError
-        `data` has the incorrect number of vertices (59412 or 64984 only
+    ------
+    `data` has the incorrect number of vertices (59412 or 64984 only
         accepted)
     """
     assert data_lh.shape[0] == 32492
@@ -132,8 +132,7 @@ def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
 
 
 def zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
-    """Remove medial wall from data in fsLR space"""
-
+    """Remove medial wall from data in fsLR space."""
     atlas = fetch_atlas("fsLR", "32k", data_dir=neuromaps_dir, verbose=0)
     medial_lh, medial_rh = atlas["medial"]
     medial_arr_lh = nib.load(medial_lh).agg_data()
@@ -153,6 +152,7 @@ def zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
 
 
 def affinity(matrix, sparsity):
+    """Compute affinity matrix from a matrix of vectors."""
     # Generate percentile thresholds for 90th percentile
     perc = np.array([np.percentile(x, sparsity) for x in matrix])
 

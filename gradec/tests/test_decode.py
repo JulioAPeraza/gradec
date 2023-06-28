@@ -1,3 +1,4 @@
+"""Tests for decoding."""
 import numpy as np
 import pytest
 

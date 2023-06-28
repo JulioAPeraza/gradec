@@ -129,9 +129,9 @@ def annotate_lda(dataset, dataset_nm, n_topics=200, n_cores=1):
         Default is 1.
 
     Returns
-        -------
-        dset : :obj:`~nimare.dataset.Dataset`
-            A new Dataset with an updated :py:attr:`~nimare.dataset.Dataset.annotations` attribute.
+    -------
+    dset : :obj:`~nimare.dataset.Dataset`
+        A new Dataset with an updated :py:attr:`~nimare.dataset.Dataset.annotations` attribute.
     """
     counts_df = _get_counts(dataset, dataset_nm)
 

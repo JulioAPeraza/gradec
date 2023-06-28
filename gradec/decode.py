@@ -130,6 +130,7 @@ class Decoder(metaclass=ABCMeta):
         return metamaps
 
     def fit(self, dset_nm):
+        """Fit decoder to dataset."""
         self.dset_nm = dset_nm
         if self.use_fetchers:
             # self.dset = _fetch_dataset(dset_nm, self.basepath)
