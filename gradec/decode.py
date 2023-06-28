@@ -171,18 +171,13 @@ class Decoder(metaclass=ABCMeta):
 class CorrelationDecoder(Decoder):
     """Decode an unthresholded image by correlating the image with meta-analytic maps."""
 
-    def transform(self, grad_maps, reorder=False):
+    def transform(self, grad_maps):
         """Correlate target image with each feature-specific meta-analytic map.
 
         Parameters
         ----------
         grad_maps : :obj:`~nibabel.nifti1.Nifti1Image`
             Image to decode. Must be in same space as ``dataset``.
-        reorder : :obj:`bool` or {'single', 'complete', 'average'}, optional
-            If not False, reorders the matrix into blocks of clusters.
-            Accepted linkage options for the clustering are 'single',
-            'complete', and 'average'. True defaults to average linkage.
-            Default=False.
 
         Returns
         -------
@@ -203,18 +198,9 @@ class CorrelationDecoder(Decoder):
         pvals_data = np.array(pvals_lst).T
         corr_pvals_data = np.array(corr_pvals_lst).T
 
-        features = self.features_
-        if reorder:
-            index = _reorder_matrix(corrs_data, reorder=reorder)
-
-            corrs_data = corrs_data[index, :]
-            pvals_data = pvals_data[index, :]
-            corr_pvals_data = corr_pvals_data[index, :]
-            features = [features[i] for i in index]
-
-        corrs_df = pd.DataFrame(index=features, data=corrs_data)
-        pvals_df = pd.DataFrame(index=features, data=pvals_data)
-        corr_pvals_df = pd.DataFrame(index=features, data=corr_pvals_data)
+        corrs_df = pd.DataFrame(index=self.features_, data=corrs_data)
+        pvals_df = pd.DataFrame(index=self.features_, data=pvals_data)
+        corr_pvals_df = pd.DataFrame(index=self.features_, data=corr_pvals_data)
         corrs_df.index.name = "feature"
         pvals_df.index.name = "feature"
         corr_pvals_df.index.name = "feature"
