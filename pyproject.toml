@@ -24,7 +24,9 @@ classifiers = [
 dependencies = [
     "nimare",
     "neuromaps",
+    "pandas",
     "surfplot",
+    "scipy",
 ]
 dynamic = ["version"]
 
