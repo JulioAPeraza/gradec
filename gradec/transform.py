@@ -1,13 +1,11 @@
 """Transforms for gradec."""
 import numpy as np
-import sparse
 from neuromaps import transforms
 from nilearn import image
 
 from gradec.utils import rm_fslr_medial_wall, zero_fslr_medial_wall
 
 N_VERTICES = 59412
-N_PERMUTATIONS = 1000
 
 
 def _mni152_to_fslr(metamaps, neuromaps_dir=None):

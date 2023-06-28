@@ -32,7 +32,7 @@ def test_correlation_decoder(tmp_path_factory, dset_nm, model_nm):
 
     decode = CorrelationDecoder(model_nm=model_nm, basepath=tmpdir, n_cores=5)
     decode.fit(dset_nm)
-    corrs_df, pvals_df, corr_pvals_df = decode.transform(grad_maps)
+    corrs_df, pvals_df, corr_pvals_df = decode.transform(grad_maps, reorder=True)
 
     corrs_df.to_csv(os.path.join(tmpdir, "corrs_df.csv"))
     pvals_df.to_csv(os.path.join(tmpdir, "pvals_df.csv"))

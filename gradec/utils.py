@@ -46,6 +46,8 @@ def _reorder_matrix(mat, reorder):
     OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH
     DAMAGE.
     """
+    reorder = "average" if reorder is True else reorder
+
     linkage_matrix = linkage(mat, method=reorder)
     ordered_linkage = optimal_leaf_ordering(linkage_matrix, mat)
 

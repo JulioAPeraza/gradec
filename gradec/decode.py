@@ -171,13 +171,18 @@ class Decoder(metaclass=ABCMeta):
 class CorrelationDecoder(Decoder):
     """Decode an unthresholded image by correlating the image with meta-analytic maps."""
 
-    def transform(self, grad_maps, reorder=True):
+    def transform(self, grad_maps, reorder=False):
         """Correlate target image with each feature-specific meta-analytic map.
 
         Parameters
         ----------
-        img : :obj:`~nibabel.nifti1.Nifti1Image`
+        grad_maps : :obj:`~nibabel.nifti1.Nifti1Image`
             Image to decode. Must be in same space as ``dataset``.
+        reorder : :obj:`bool` or {'single', 'complete', 'average'}, optional
+            If not False, reorders the matrix into blocks of clusters.
+            Accepted linkage options for the clustering are 'single',
+            'complete', and 'average'. True defaults to average linkage.
+            Default=False.
 
         Returns
         -------
@@ -200,7 +205,7 @@ class CorrelationDecoder(Decoder):
 
         features = self.features_
         if reorder:
-            index = _reorder_matrix(corrs_data, "single")
+            index = _reorder_matrix(corrs_data, reorder=reorder)
 
             corrs_data = corrs_data[index, :]
             pvals_data = pvals_data[index, :]
