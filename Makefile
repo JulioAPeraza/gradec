@@ -11,4 +11,4 @@ lint:
 	@flake8 gradec
 
 unittest:
-	@py.test -m "unittest" --cov-append --cov-report=xml --cov=gradec gradec
+	@py.test --cov-append --cov-report=xml --cov=gradec gradec

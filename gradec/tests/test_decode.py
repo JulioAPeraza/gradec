@@ -25,7 +25,7 @@ def test_correlation_decoder(tmp_path_factory, dset_nm, model_nm):
     segmentation = KMeansSegmentation(n_segments).fit(gradient)
     grad_maps = segmentation.transform()
 
-    decode = CorrelationDecoder(model_nm=model_nm, basepath=tmpdir, n_cores=5)
+    decode = CorrelationDecoder(model_nm=model_nm, basepath=tmpdir)
     decode.fit(dset_nm)
     corrs_df, pvals_df, corr_pvals_df = decode.transform(grad_maps)
 

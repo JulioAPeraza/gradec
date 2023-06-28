@@ -137,5 +137,5 @@ def annotate_lda(dataset, dataset_nm, n_topics=200, n_cores=1):
 
     model = LDAModel(n_topics=n_topics, max_iter=1000, n_cores=n_cores)
     dataset = model.fit(dataset, counts_df)
-    
+
     return dataset, model

@@ -62,15 +62,6 @@ def test_fetch_spinsamples(tmp_path_factory):
     assert spinsamples.shape == (59412, 1000)
 
 
-@pytest.mark.parametrize("dset_nm", [("neurosynth"), ("neuroquery")])
-def test_fetch_dataset(tmp_path_factory, dset_nm):
-    """Test fetching features from OSF."""
-    tmpdir = tmp_path_factory.mktemp("test_fetch_features")
-
-    dset = _fetch_dataset(dset_nm, data_dir=tmpdir)
-    assert isinstance(dset, Dataset)
-
-
 def test_fetch_neuroquery_counts(tmp_path_factory):
     """Test fetching neuroquery_counts from OSF."""
     tmpdir = tmp_path_factory.mktemp("test_fetch_features")

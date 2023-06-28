@@ -16,22 +16,20 @@ from gradec.utils import get_data_dir
 
 OSF_URL = "https://osf.io/{}/download"
 OSF_DICT = {
-    "term_neurosynth_metamaps.npz": "",
+    "term_neurosynth_metamaps.npz": "rt843",
     "term_neurosynth_features.csv": "hyjrk",
-    "term_neuroquery_metamaps.npz": "",
+    "term_neuroquery_metamaps.npz": "azyw2",
     "term_neuroquery_features.csv": "xtjna",
     "lda_neurosynth_metamaps.npz": "wmp4b",
     "lda_neurosynth_features.csv": "ve3nj",
-    "lda_neurosynth_model.pkl.gz": "",
     "lda_neuroquery_metamaps.npz": "t5fjb",
     "lda_neuroquery_features.csv": "u68w7",
-    "lda_neuroquery_model.pkl.gz": "",
     "gclda_neurosynth_metamaps.npz": "hyknz",
     "gclda_neurosynth_features.csv": "jcrkd",
-    "gclda_neurosynth_model.pkl.gz": "",
+    "gclda_neurosynth_model.pkl.gz": "bg8ef",
     "gclda_neuroquery_metamaps.npz": "t5k2b",
     "gclda_neuroquery_features.csv": "trcxs",
-    "gclda_neuroquery_model.pkl.gz": "",
+    "gclda_neuroquery_model.pkl.gz": "vsm65",
     "spinsamples_fslr.npz": "nukdt",
     "neuroquery_counts": "p39mg",
 }

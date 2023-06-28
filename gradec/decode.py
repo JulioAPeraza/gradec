@@ -12,17 +12,11 @@ from nimare.extract import download_abstracts, fetch_neuroquery, fetch_neurosynt
 from nimare.io import convert_neurosynth_to_dataset
 from nimare.meta.cbma.mkda import MKDAChi2
 
-from gradec.fetcher import (
-    _fetch_dataset,
-    _fetch_features,
-    _fetch_metamaps,
-    _fetch_model,
-    _fetch_spinsamples,
-)
+from gradec.fetcher import _fetch_features, _fetch_metamaps, _fetch_spinsamples
 from gradec.model import _get_counts, annotate_lda
-from gradec.stats import _permtest_pearson, _permute_metamaps
+from gradec.stats import _permtest_pearson
 from gradec.transform import _mni152_to_fslr
-from gradec.utils import _check_ncores, _reorder_matrix
+from gradec.utils import _check_ncores
 
 N_TOP_WORDS = 3  # Number of words to show on LDA-based decoders
 
@@ -156,7 +150,7 @@ class Decoder(metaclass=ABCMeta):
                 )
             metamaps = self._train_decoder()
             metamaps_fslr = _mni152_to_fslr(metamaps, self.basepath)
-            metamaps_pmted_fslr = _permute_metamaps(metamaps_fslr)
+            # metamaps_pmted_fslr = _permute_metamaps(metamaps_fslr)
             features = self.get_features()
 
         self.maps_ = metamaps_fslr

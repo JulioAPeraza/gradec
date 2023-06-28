@@ -56,6 +56,7 @@ test = [
     "flake8-black",
     "flake8-docstrings",
     "flake8-isort",
+    "flake8-pyproject",
     "pytest",
     "pytest-cov",
     "pytest-env",
@@ -64,9 +65,10 @@ test = [
 docs = ["gradec[doc]"]
 devs = ["gradec[dev]"]
 tests = ["gradec[test]"]
+minimum = ["gradec[min]"]
 all = ["gradec[doc,dev,test]"]
 
-[flake8]
+[tool.flake8]
 max-line-length = 99
 exclude = "*build/"
 ignore = ["E203", "E402", "E722", "W503"]
