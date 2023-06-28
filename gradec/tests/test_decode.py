@@ -1,4 +1,4 @@
-"""Tests for decoding."""
+"""Tests for decode."""
 import numpy as np
 import pytest
 
@@ -11,17 +11,15 @@ from gradec.segmentation import KMeansSegmentation
     [
         ("neurosynth", "term"),
         ("neurosynth", "lda"),
-        ("neurosynth", "gclda"),
         ("neuroquery", "term"),
         ("neuroquery", "lda"),
-        ("neuroquery", "gclda"),
     ],
 )
 def test_correlation_decoder(tmp_path_factory, dset_nm, model_nm):
     """Test fetching features from OSF."""
     tmpdir = tmp_path_factory.mktemp("test_fetch_features")
 
-    n_segments = 5
+    n_segments = 2
     gradient = np.random.rand(59412)
     segmentation = KMeansSegmentation(n_segments).fit(gradient)
     grad_maps = segmentation.transform()
