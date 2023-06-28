@@ -24,8 +24,7 @@ from gradec.fetcher import (
 )
 def test_fetch_features(tmp_path_factory, dset_nm, model_nm):
     """Test fetching features from OSF."""
-    # tmpdir = tmp_path_factory.mktemp("test_fetch_features")
-    tmpdir = "/Users/jperaza/Desktop/tes_fetcher"
+    tmpdir = tmp_path_factory.mktemp("test_fetch_features")
 
     features = _fetch_features(dset_nm, model_nm, data_dir=tmpdir)
     assert isinstance(features, list)
@@ -47,8 +46,7 @@ def test_fetch_features(tmp_path_factory, dset_nm, model_nm):
 )
 def test_fetch_metamaps(tmp_path_factory, dset_nm, model_nm, n_maps):
     """Test fetching features from OSF."""
-    # tmpdir = tmp_path_factory.mktemp("test_fetch_features")
-    tmpdir = "/Users/jperaza/Desktop/tes_fetcher"
+    tmpdir = tmp_path_factory.mktemp("test_fetch_features")
 
     metamaps_fslr = _fetch_metamaps(dset_nm, model_nm, data_dir=tmpdir)
     assert isinstance(metamaps_fslr, np.ndarray)
@@ -57,8 +55,7 @@ def test_fetch_metamaps(tmp_path_factory, dset_nm, model_nm, n_maps):
 
 def test_fetch_spinsamples(tmp_path_factory):
     """Test fetching spinsamples from OSF."""
-    # tmpdir = tmp_path_factory.mktemp("test_fetch_spinsamples")
-    tmpdir = "/Users/jperaza/Desktop/tes_fetcher"
+    tmpdir = tmp_path_factory.mktemp("test_fetch_spinsamples")
 
     spinsamples = _fetch_spinsamples(data_dir=tmpdir)
     assert isinstance(spinsamples, np.ndarray)
@@ -68,8 +65,7 @@ def test_fetch_spinsamples(tmp_path_factory):
 @pytest.mark.parametrize("dset_nm", [("neurosynth"), ("neuroquery")])
 def test_fetch_dataset(tmp_path_factory, dset_nm):
     """Test fetching features from OSF."""
-    # tmpdir = tmp_path_factory.mktemp("test_fetch_features")
-    tmpdir = "/Users/jperaza/Desktop/tes_fetcher"
+    tmpdir = tmp_path_factory.mktemp("test_fetch_features")
 
     dset = _fetch_dataset(dset_nm, data_dir=tmpdir)
     assert isinstance(dset, Dataset)
@@ -77,8 +73,7 @@ def test_fetch_dataset(tmp_path_factory, dset_nm):
 
 def test_fetch_neuroquery_counts(tmp_path_factory):
     """Test fetching neuroquery_counts from OSF."""
-    # tmpdir = tmp_path_factory.mktemp("test_fetch_features")
-    tmpdir = "/Users/jperaza/Desktop/tes_fetcher"
+    tmpdir = tmp_path_factory.mktemp("test_fetch_features")
 
     counts = _fetch_neuroquery_counts(data_dir=tmpdir)
     assert isinstance(counts, np.ndarray)
