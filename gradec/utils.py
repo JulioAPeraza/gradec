@@ -55,7 +55,7 @@ def _reorder_matrix(mat, reorder):
 
 
 def get_data_dir(data_dir=None):
-    """Gets path to gradec data directory.
+    """Get path to gradec data directory.
 
     Parameters
     ----------
