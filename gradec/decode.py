@@ -8,22 +8,27 @@ import pandas as pd
 from joblib import Parallel, delayed
 from nilearn import masking
 from nimare.annotate.gclda import GCLDAModel
+from nimare.decode.utils import weight_priors
 from nimare.extract import download_abstracts, fetch_neuroquery, fetch_neurosynth
 from nimare.io import convert_neurosynth_to_dataset
 from nimare.meta.cbma.mkda import MKDAChi2
 
-from gradec.fetcher import _fetch_features, _fetch_metamaps, _fetch_spinsamples
+from gradec.fetcher import (
+    _fetch_features,
+    _fetch_metamaps,
+    _fetch_model,
+    _fetch_spinsamples,
+)
 from gradec.model import _get_counts, annotate_lda
 from gradec.stats import _permtest_pearson
 from gradec.transform import _mni152_to_fslr
-from gradec.utils import _check_ncores
+from gradec.utils import _check_ncores, get_data_dir
 
 N_TOP_WORDS = 3  # Number of words to show on LDA-based decoders
 
 
-def _get_dataset(dset_nm, basepath):
-    data_dir = op.join(basepath, "data")
-    os.makedirs(data_dir, exist_ok=True)
+def _get_dataset(dset_nm, data_dir):
+    data_dir = get_data_dir(op.join(data_dir, "data", dset_nm))
 
     if dset_nm == "neurosynth":
         files = fetch_neurosynth(
@@ -50,7 +55,7 @@ def _get_dataset(dset_nm, basepath):
         metadata_file=dataset_db["metadata"],
         annotations_files=dataset_db["features"],
     )
-    dset.update_path(basepath)
+    dset.update_path(data_dir)
 
     if dset_nm == "neurosynth":
         # Download abstracts only for Neurosynth
@@ -65,13 +70,13 @@ class Decoder(metaclass=ABCMeta):
         model_nm="lda",
         n_topics=200,
         use_fetchers=True,
-        basepath=None,
+        data_dir=None,
         n_cores=1,
     ):
         self.model_nm = model_nm
         self.n_topics = n_topics
         self.use_fetchers = use_fetchers
-        self.basepath = op.abspath(basepath) if basepath else op.abspath(".")
+        self.data_dir = op.abspath(data_dir) if data_dir else op.abspath(".")
         self.n_cores = _check_ncores(n_cores)
 
     @abstractmethod
@@ -133,14 +138,11 @@ class Decoder(metaclass=ABCMeta):
         """Fit decoder to dataset."""
         self.dset_nm = dset_nm
         if self.use_fetchers:
-            # self.dset = _fetch_dataset(dset_nm, self.basepath)
-            # self.model = _fetch_model(self.dset_nm, self.model_nm)
-            # self.decoder = _fetch_decoder(self.dset_nm, self.model_nm)
-            features = _fetch_features(self.dset_nm, self.model_nm, self.basepath)
-            metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm, self.basepath)
-            spinsamples_fslr = _fetch_spinsamples(self.basepath)
+            features = _fetch_features(self.dset_nm, self.model_nm, self.data_dir)
+            metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm, self.data_dir)
+            spinsamples_fslr = _fetch_spinsamples(self.data_dir)
         else:
-            self.dset = _get_dataset(dset_nm, self.basepath)
+            self.dset = _get_dataset(dset_nm, self.data_dir)
 
             if self.model_nm == "lda":
                 self.dset, self.model = annotate_lda(
@@ -150,8 +152,7 @@ class Decoder(metaclass=ABCMeta):
                     n_cores=self.n_cores,
                 )
             metamaps = self._train_decoder()
-            metamaps_fslr = _mni152_to_fslr(metamaps, self.basepath)
-            # metamaps_pmted_fslr = _permute_metamaps(metamaps_fslr)
+            metamaps_fslr = _mni152_to_fslr(metamaps, self.data_dir)
             features = self.get_features()
 
         self.maps_ = metamaps_fslr
@@ -179,9 +180,6 @@ class CorrelationDecoder(Decoder):
         out_df : :obj:`pandas.DataFrame`
             DataFrame with one row for each feature, an index named "feature", and one column: "r".
         """
-        # metamaps_fslr_perm_arr = _permute_metamaps(metamaps_fslr_arr)
-
-        # Make sure we return a copy of the MetaResult
         corrs_lst, pvals_lst, corr_pvals_lst = zip(
             *Parallel(n_jobs=self.n_cores)(
                 delayed(_permtest_pearson)(grad_map, self.maps_, self.spinsamples_)
@@ -201,3 +199,37 @@ class CorrelationDecoder(Decoder):
         corr_pvals_df.index.name = "feature"
 
         return corrs_df, pvals_df, corr_pvals_df
+
+
+class GCLDADecoder(Decoder):
+    """Decode an unthresholded image by correlating the image with meta-analytic maps."""
+
+    def transform(self, grad_maps, topic_priors=None, prior_weight=1):
+        """Correlate target image with each feature-specific meta-analytic map.
+
+        Parameters
+        ----------
+        grad_maps : :obj:`~nibabel.nifti1.Nifti1Image`
+            Image to decode. Must be in same space as ``dataset``.
+
+        Returns
+        -------
+        out_df : :obj:`pandas.DataFrame`
+            DataFrame with one row for each feature, an index named "feature", and one column: "r".
+        """
+        model = _fetch_model(self.dset_nm, self.model_nm, data_dir=self.data_dir)
+
+        word_weights = []
+        for grad_map in grad_maps:
+            topic_weights = np.squeeze(np.dot(self.maps_, grad_map))
+            if topic_priors is not None:
+                weighted_priors = weight_priors(topic_priors, prior_weight)
+                topic_weights *= weighted_priors
+
+            word_weights.append(np.dot(model.p_word_g_topic_, topic_weights))
+
+        word_weights = np.array(word_weights).T
+
+        decoded_df = pd.DataFrame(index=model.vocabulary, data=word_weights)
+        decoded_df.index.name = "Term"
+        return decoded_df

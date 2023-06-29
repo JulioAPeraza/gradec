@@ -1,10 +1,12 @@
 """Test fetching data from OSF."""
 import numpy as np
 import pytest
+from nimare.annotate import GCLDAModel
 
 from gradec.fetcher import (
     _fetch_features,
     _fetch_metamaps,
+    _fetch_model,
     _fetch_neuroquery_counts,
     _fetch_spinsamples,
 )
@@ -67,3 +69,12 @@ def test_fetch_neuroquery_counts(tmp_path_factory):
 
     counts = _fetch_neuroquery_counts(data_dir=tmpdir)
     assert isinstance(counts, np.ndarray)
+
+
+@pytest.mark.parametrize("dset_nm,model_nm", [("neurosynth", "gclda"), ("neuroquery", "gclda")])
+def test_fetch_model(tmp_path_factory, dset_nm, model_nm):
+    """Test fetching models from OSF."""
+    tmpdir = tmp_path_factory.mktemp("test_fetch_features")
+
+    model = _fetch_model(dset_nm, model_nm, data_dir=tmpdir)
+    assert isinstance(model, GCLDAModel)
