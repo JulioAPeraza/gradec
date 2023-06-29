@@ -1,5 +1,4 @@
 """Decode module."""
-import os
 import os.path as op
 from abc import ABCMeta, abstractmethod
 
