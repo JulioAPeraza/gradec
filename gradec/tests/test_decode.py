@@ -38,7 +38,7 @@ def test_correlation_decoder(tmp_path_factory, dset_nm, model_nm):
     "dset_nm,model_nm,n_maps",
     [
         ("neurosynth", "gclda", 3228),
-        ("neuroquery", "gclda", 6145),
+        ("neuroquery", "gclda", 6117),
     ],
 )
 def test_gclda_decoder(tmp_path_factory, dset_nm, model_nm, n_maps):

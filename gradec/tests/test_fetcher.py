@@ -40,7 +40,7 @@ def test_fetch_features(tmp_path_factory, dset_nm, model_nm):
         ("neurosynth", "term", 3228),
         ("neurosynth", "lda", 200),
         ("neurosynth", "gclda", 200),
-        ("neuroquery", "term", 6145),
+        ("neuroquery", "term", 6117),
         ("neuroquery", "lda", 200),
         ("neuroquery", "gclda", 200),
     ],
