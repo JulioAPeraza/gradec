@@ -19,11 +19,9 @@ from gradec.fetcher import (
     _fetch_spinsamples,
 )
 from gradec.model import _get_counts, annotate_lda
-from gradec.stats import _permtest_pearson
+from gradec.stats import _gen_spinsamples, _permtest_pearson
 from gradec.transform import _mni152_to_fslr
 from gradec.utils import _check_ncores, get_data_dir
-
-N_TOP_WORDS = 3  # Number of words to show on LDA-based decoders
 
 
 def _get_dataset(dset_nm, data_dir):
@@ -68,14 +66,17 @@ class Decoder(metaclass=ABCMeta):
         self,
         model_nm="lda",
         n_topics=200,
+        n_top_words=3,
         use_fetchers=True,
         data_dir=None,
         n_cores=1,
     ):
         self.model_nm = model_nm
         self.n_topics = n_topics
+        self.n_top_words = n_top_words
         self.use_fetchers = use_fetchers
         self.data_dir = op.abspath(data_dir) if data_dir else op.abspath(".")
+        self.neuromaps_dir = get_data_dir(op.join(self.data_dir, "neuromaps"))
         self.n_cores = _check_ncores(n_cores)
 
     @abstractmethod
@@ -99,7 +100,15 @@ class Decoder(metaclass=ABCMeta):
         )
         frequency_threshold = 0.001 if self.model_nm == "term" else 0.05
 
-        if (self.model_nm == "term") or (self.model_nm == "lda"):
+        if self.model_nm == "lda":
+            self.dset, self.model = annotate_lda(
+                self.dset,
+                self.dset_nm,
+                n_topics=self.n_topics,
+                n_cores=self.n_cores,
+            )
+
+        if self.model_nm in ["term", "lda"]:
             decoder = CorrelationDecoder(
                 frequency_threshold=frequency_threshold,
                 meta_estimator=MKDAChi2,
@@ -128,7 +137,7 @@ class Decoder(metaclass=ABCMeta):
             gclda_model.fit(n_iters=1000, loglikely_freq=100)
             self.model = gclda_model
 
-            metamaps_arr = gclda_model.p_voxel_g_topic_.T
+            metamaps_arr = gclda_model.p_topic_g_voxel_.T
             metamaps = masking.unmask(metamaps_arr, gclda_model.mask)
 
         return metamaps
@@ -137,26 +146,20 @@ class Decoder(metaclass=ABCMeta):
         """Fit decoder to dataset."""
         self.dset_nm = dset_nm
         if self.use_fetchers:
-            features = _fetch_features(self.dset_nm, self.model_nm, self.data_dir)
             metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm, self.data_dir)
+            features = _fetch_features(self.dset_nm, self.model_nm, self.data_dir)
             spinsamples_fslr = _fetch_spinsamples(self.data_dir)
         else:
             self.dset = _get_dataset(dset_nm, self.data_dir)
-
-            if self.model_nm == "lda":
-                self.dset, self.model = annotate_lda(
-                    self.dset,
-                    dset_nm,
-                    n_topics=self.n_topics,
-                    n_cores=self.n_cores,
-                )
             metamaps = self._train_decoder()
-            metamaps_fslr = _mni152_to_fslr(metamaps, self.data_dir)
-            features = self.get_features()
+
+            metamaps_fslr = _mni152_to_fslr(metamaps, self.neuromaps_dir)
+            features = self._get_features()
+            spinsamples_fslr = _gen_spinsamples(self.neuromaps_dir, self.n_samples, self.n_cores)
 
         self.maps_ = metamaps_fslr
         if self.model_nm in ["lda", "gclda"]:
-            self.features_ = ["_".join(feature[:N_TOP_WORDS]) for feature in features]
+            self.features_ = ["_".join(feature[: self.n_top_words]) for feature in features]
         else:
             self.features_ = [feature[0] for feature in features]
 
