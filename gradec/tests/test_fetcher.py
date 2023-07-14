@@ -58,9 +58,10 @@ def test_fetch_spinsamples(tmp_path_factory):
     """Test fetching spinsamples from OSF."""
     tmpdir = tmp_path_factory.mktemp("test_fetch_spinsamples")
 
-    spinsamples = _fetch_spinsamples(data_dir=tmpdir)
+    n_samples = 1000
+    spinsamples = _fetch_spinsamples(n_samples, data_dir=tmpdir)
     assert isinstance(spinsamples, np.ndarray)
-    assert spinsamples.shape == (59412, 1000)
+    assert spinsamples.shape == (59412, n_samples)
 
 
 def test_fetch_neuroquery_counts(tmp_path_factory):
