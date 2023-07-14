@@ -139,7 +139,7 @@ def zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
     medial_arr_rh = nib.load(medial_rh).agg_data()
 
     data_arr_lh = data_lh.agg_data()
-    data_arr_rh = data_lh.agg_data()
+    data_arr_rh = data_rh.agg_data()
     data_arr_lh[np.where(medial_arr_lh == 0)] = 0
     data_arr_rh[np.where(medial_arr_rh == 0)] = 0
 
@@ -187,3 +187,12 @@ def _check_ncores(n_cores):
         )
         n_cores = mp.cpu_count()
     return n_cores
+
+
+def _conform_features(features, model_nm, n_top_words):
+    """Conform features to a standard format."""
+    if model_nm in ["lda", "gclda"]:
+        # TODO: this need to be fixed for LDA, since the some topic are filtered by the threshold.
+        return [f"{i+1}_{'_'.join(feature[:n_top_words])}" for i, feature in enumerate(features)]
+    else:
+        return [feature[0] for feature in features]

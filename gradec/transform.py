@@ -17,7 +17,8 @@ def _mni152_to_fslr(metamaps, fslr_density="32k", neuromaps_dir=None):
     """Transform 4D metamaps from MNI152 to fsLR space."""
     n_maps = metamaps.shape[3]
 
-    metamap_fslr = np.zeros((n_maps, N_VERTICES.fsLR[fslr_density]))
+    # TODO: need to parallelize this loop
+    metamap_fslr = np.zeros((n_maps, N_VERTICES["fsLR"][fslr_density]))
     for map_i in range(n_maps):
         metamap = image.index_img(metamaps, map_i)
 

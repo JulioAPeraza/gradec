@@ -16,18 +16,18 @@ from gradec.utils import get_data_dir
 
 OSF_URL = "https://osf.io/{}/download"
 OSF_DICT = {
-    "term_neurosynth_metamaps.npz": "rt843",
+    "term_neurosynth_metamaps.npz": "ju2tk",
     "term_neurosynth_features.csv": "hyjrk",
-    "term_neuroquery_metamaps.npz": "azyw2",
+    "term_neuroquery_metamaps.npz": "38fh4",
     "term_neuroquery_features.csv": "xtjna",
-    "lda_neurosynth_metamaps.npz": "wmp4b",
+    "lda_neurosynth_metamaps.npz": "9ftkm",
     "lda_neurosynth_features.csv": "ve3nj",
-    "lda_neuroquery_metamaps.npz": "t5fjb",
+    "lda_neuroquery_metamaps.npz": "k4xza",
     "lda_neuroquery_features.csv": "u68w7",
-    "gclda_neurosynth_metamaps.npz": "q4va5",
+    "gclda_neurosynth_metamaps.npz": "hwdft",
     "gclda_neurosynth_features.csv": "jcrkd",
     "gclda_neurosynth_model.pkl.gz": "bg8ef",
-    "gclda_neuroquery_metamaps.npz": "zqv9d",
+    "gclda_neuroquery_metamaps.npz": "ey6cw",
     "gclda_neuroquery_features.csv": "trcxs",
     "gclda_neuroquery_model.pkl.gz": "vsm65",
     "spinsamples_fslr.npz": "q5yv6",
@@ -164,7 +164,7 @@ def _fetch_metamaps(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     return np.load(metamaps_fn)["arr"]
 
 
-def _fetch_spinsamples(data_dir=None, overwrite=False, resume=True, verbose=1):
+def _fetch_spinsamples(n_samples=1000, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch spin samples from OSF.
 
     Parameters
@@ -198,7 +198,7 @@ def _fetch_spinsamples(data_dir=None, overwrite=False, resume=True, verbose=1):
         verbose=verbose,
     )
 
-    return np.load(spinsamples_fn)["arr"]
+    return np.load(spinsamples_fn)["arr"][:, :n_samples]
 
 
 def _fetch_dataset(dset_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
