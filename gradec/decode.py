@@ -152,7 +152,8 @@ class TermDecoder(CorrelationDecoder):
         self.model_nm = "term"
 
     def _get_features(self):
-        return [f.split("__")[-1] for f in self.decoder.features_]
+        decoder_features = list(self.decoder.results_.maps.keys())
+        return [f.split("__")[-1] for f in decoder_features]
 
     def _train_decoder(self):
         frequency_threshold = 0.001
@@ -166,8 +167,8 @@ class TermDecoder(CorrelationDecoder):
         decoder.fit(self.dset)
         self.decoder = decoder
 
-        metamaps_arr = decoder.images_
-        return decoder.masker.inverse_transform(metamaps_arr)
+        metamaps_arr = np.array(list(decoder.results_.maps.values()))
+        return decoder.results_.masker.inverse_transform(metamaps_arr)
 
     def transform(self, grad_maps, method="correlation", topic_priors=None, prior_weight=1):
         """Correlate target image with each feature-specific meta-analytic map.
@@ -205,7 +206,8 @@ class LDADecoder(CorrelationDecoder):
 
         # Get only the topics that were used to trained the decoder (those that
         # have at least one study over the 0.05 threshold)
-        feat_used_ids = [int(f.split("__")[-1].split("_")[0]) - 1 for f in self.decoder.features_]
+        decoder_features = list(self.decoder.results_.maps.keys())
+        feat_used_ids = [int(f.split("__")[-1].split("_")[0]) - 1 for f in decoder_features]
 
         return [features[i] for i in feat_used_ids]
 
@@ -234,8 +236,8 @@ class LDADecoder(CorrelationDecoder):
         decoder.fit(self.dset)
         self.decoder = decoder
 
-        metamaps_arr = decoder.images_
-        return decoder.masker.inverse_transform(metamaps_arr)
+        metamaps_arr = np.array(list(decoder.results_.maps.values()))
+        return decoder.results_.masker.inverse_transform(metamaps_arr)
 
     def transform(self, grad_maps, method="correlation", topic_priors=None, prior_weight=1):
         """Correlate target image with each feature-specific meta-analytic map.
