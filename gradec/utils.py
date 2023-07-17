@@ -84,7 +84,7 @@ def get_data_dir(data_dir=None):
     return data_dir
 
 
-def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
+def _rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
     """Remove medial wall from data in fsLR space.
 
     Data in 32k fs_LR space (e.g., Human Connectome Project data) often in
@@ -131,7 +131,7 @@ def rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
     return data
 
 
-def zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
+def _zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
     """Remove medial wall from data in fsLR space."""
     atlas = fetch_atlas("fsLR", "32k", data_dir=neuromaps_dir, verbose=0)
     medial_lh, medial_rh = atlas["medial"]
@@ -151,7 +151,7 @@ def zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
     return data_lh, data_rh
 
 
-def affinity(matrix, sparsity):
+def _affinity(matrix, sparsity):
     """Compute affinity matrix from a matrix of vectors."""
     # Generate percentile thresholds for 90th percentile
     perc = np.array([np.percentile(x, sparsity) for x in matrix])
@@ -167,7 +167,7 @@ def affinity(matrix, sparsity):
     return matrix
 
 
-def get_resource_path():
+def _get_resource_path():
     """Return the path to general resources, terminated with separator.
 
     Resources are kept outside package folder in "datasets".
