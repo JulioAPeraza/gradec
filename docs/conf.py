@@ -27,6 +27,7 @@ from m2r import MdInclude
 from sphinx_gallery.sorting import FileNameSortKey
 
 brainspace.OFF_SCREEN = True  # off screen rendering for examples
+
 sys.path.insert(0, os.path.abspath(os.path.pardir))
 sys.path.insert(0, os.path.abspath("sphinxext"))
 
