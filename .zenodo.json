@@ -1,0 +1,38 @@
+{
+    "creators": [
+        {
+            "name": "Peraza, Julio A.",
+            "affiliation": "Florida International University",
+            "orcid": "0000-0003-3816-5903"
+        },
+        {
+            "name": "Kent, James D.",
+            "affiliation": "University of Texas at Austin",
+            "orcid": "0000-0002-4892-2659"
+        },
+        {
+            "name": "Salo, Taylor",
+            "affiliation": "University of Pennsylvania",
+            "orcid": "0000-0001-9813-3167"
+        },
+        {
+            "name": "De La Vega, Alejandro",
+            "affiliation": "University of Texas at Austin",
+            "orcid": "0000-0001-9062-3778"
+        },
+        {
+            "name": "Laird, Angela R.",
+            "affiliation": "Florida International University",
+            "orcid": "0000-0003-3379-8744"
+        }
+    ],
+    "keywords": [
+        "neuroimaging",
+        "fMRI",
+        "gradients",
+        "functional decoding",
+        "meta-analysis"
+    ],
+    "license": "Apache-2.0",
+    "upload_type": "software"
+}
