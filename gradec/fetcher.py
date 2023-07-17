@@ -30,6 +30,8 @@ OSF_DICT = {
     "gclda_neuroquery_metamaps.npz": "ey6cw",
     "gclda_neuroquery_features.csv": "trcxs",
     "gclda_neuroquery_model.pkl.gz": "vsm65",
+    "hcp-s1200_gradients.npy": "t95gk",
+    "principal_gradient.npy": "5th7c",
     "spinsamples_fslr.npz": "q5yv6",
     "neuroquery_counts": "p39mg",
 }
@@ -68,12 +70,13 @@ def _my_fetch_file(data_dir, filename, url, overwrite=False, resume=True, verbos
 
 
 def _fetch_neuroquery_counts(data_dir=None, overwrite=False, resume=True, verbose=1):
-    data_dir = get_data_dir(os.path.join(data_dir, "meta-analysis", "neuroquery"))
+    data_dir = get_data_dir(data_dir)
+    counts_dir = get_data_dir(os.path.join(data_dir, "meta-analysis", "neuroquery"))
 
     filename = "neuroquery_counts"
     url = _get_osf_url(filename)
     opts = dict(uncompress=True, overwrite=overwrite)
-    counts_fns = _fetch_files(data_dir, [(filename, url, opts)], resume=resume, verbose=verbose)
+    counts_fns = _fetch_files(counts_dir, [(filename, url, opts)], resume=resume, verbose=verbose)
 
     counts_arr_fns = glob(os.path.join(counts_fns[0], "*_features.npz"))
     counts_sparse = sum(load_npz(counts_arr_fn) for counts_arr_fn in counts_arr_fns)
@@ -105,13 +108,14 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     :class:`list` of str
         List of feature names.
     """
-    data_dir = get_data_dir(os.path.join(data_dir, "decoding"))
+    data_dir = get_data_dir(data_dir)
+    dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
 
     filename = f"{model_nm}_{dset_nm}_features.csv"
     url = _get_osf_url(filename)
 
     features_fn = _my_fetch_file(
-        data_dir,
+        dec_dir,
         filename,
         url,
         overwrite=overwrite,
@@ -147,13 +151,14 @@ def _fetch_metamaps(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     :class:`list` of str
         List of feature names.
     """
-    data_dir = get_data_dir(os.path.join(data_dir, "decoding"))
+    data_dir = get_data_dir(data_dir)
+    dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
 
     filename = f"{model_nm}_{dset_nm}_metamaps.npz"
     url = _get_osf_url(filename)
 
     metamaps_fn = _my_fetch_file(
-        data_dir,
+        dec_dir,
         filename,
         url,
         overwrite=overwrite,
@@ -223,13 +228,14 @@ def _fetch_dataset(dset_nm, data_dir=None, overwrite=False, resume=True, verbose
     :obj:`~nimare.dataset.Dataset`
         NiMARE Dataset object.
     """
-    data_dir = get_data_dir(os.path.join(data_dir, "meta-analysis", dset_nm))
+    data_dir = get_data_dir(data_dir)
+    dset_dir = get_data_dir(os.path.join(data_dir, "meta-analysis", dset_nm))
 
     filename = f"{dset_nm}_dataset.pkl.gz"
     url = _get_osf_url(filename)
 
     dset_fn = _my_fetch_file(
-        data_dir,
+        dset_dir,
         filename,
         url,
         overwrite=overwrite,
@@ -264,13 +270,14 @@ def _fetch_model(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True,
     :obj:`~nimare.dataset.Dataset`
         NiMARE LDA or GCLDA object.
     """
-    data_dir = get_data_dir(os.path.join(data_dir, "models"))
+    data_dir = get_data_dir(data_dir)
+    model_dir = get_data_dir(os.path.join(data_dir, "models"))
 
     filename = f"{model_nm}_{dset_nm}_model.pkl.gz"
     url = _get_osf_url(filename)
 
     model_fn = _my_fetch_file(
-        data_dir,
+        model_dir,
         filename,
         url,
         overwrite=overwrite,
@@ -306,13 +313,14 @@ def _fetch_decoder(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tru
     :obj:`~nimare.dataset.Dataset`
         NiMARE LDA or GCLDA object.
     """
-    data_dir = get_data_dir(os.path.join(data_dir, "decoding"))
+    data_dir = get_data_dir(data_dir)
+    dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
 
     filename = f"{model_nm}_{dset_nm}_decoder.pkl.gz"
     url = _get_osf_url(filename)
 
     decoder_fn = _my_fetch_file(
-        data_dir,
+        dec_dir,
         filename,
         url,
         overwrite=overwrite,
@@ -322,3 +330,79 @@ def _fetch_decoder(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tru
 
     decoder_file = gzip.open(decoder_fn, "rb")
     return pickle.load(decoder_file)
+
+
+def _fetch_gradients(data_dir=None, overwrite=False, resume=True, verbose=1):
+    """Fetch gradients from OSF.
+
+    Parameters
+    ----------
+    data_dir : :obj:`pathlib.Path` or :obj:`str`, optional
+        Path where data should be downloaded. By default,
+        files are downloaded in home directory
+    resume : :obj:`bool`, optional
+        Whether to resume download of a partly-downloaded file.
+        Default=True.
+    verbose : :obj:`int`, optional
+        Verbosity level (0 means no message).
+        Default=1.
+
+    Returns
+    -------
+    :obj:`numpy.ndarray`
+        2D array of gradients.
+    """
+    data_dir = get_data_dir(data_dir)
+    grad_dir = get_data_dir(os.path.join(data_dir, "gradient"))
+
+    filename = "hcp-s1200_gradients.npy"
+    url = _get_osf_url(filename)
+
+    gradient_fn = _my_fetch_file(
+        grad_dir,
+        filename,
+        url,
+        overwrite=overwrite,
+        resume=resume,
+        verbose=verbose,
+    )
+
+    return np.load(gradient_fn)
+
+
+def _fetch_principal_gradients(data_dir=None, overwrite=False, resume=True, verbose=1):
+    """Fetch principal gradient from OSF.
+
+    Parameters
+    ----------
+    data_dir : :obj:`pathlib.Path` or :obj:`str`, optional
+        Path where data should be downloaded. By default,
+        files are downloaded in home directory
+    resume : :obj:`bool`, optional
+        Whether to resume download of a partly-downloaded file.
+        Default=True.
+    verbose : :obj:`int`, optional
+        Verbosity level (0 means no message).
+        Default=1.
+
+    Returns
+    -------
+    :obj:`numpy.ndarray`
+        1D array, principal gradient.
+    """
+    data_dir = get_data_dir(data_dir)
+    grad_dir = get_data_dir(os.path.join(data_dir, "gradient"))
+
+    filename = "principal_gradient.npy"
+    url = _get_osf_url(filename)
+
+    gradient_fn = _my_fetch_file(
+        grad_dir,
+        filename,
+        url,
+        overwrite=overwrite,
+        resume=resume,
+        verbose=verbose,
+    )
+
+    return np.load(gradient_fn)
