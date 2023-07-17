@@ -1,7 +1,7 @@
 """Plot module for gradec."""
-import gc
 import os
 
+import numpy as np
 from matplotlib import pyplot as plt
 from neuromaps.datasets import fetch_fslr
 from surfplot import Plot
@@ -40,4 +40,15 @@ def plot_surf_maps(
         color_range=color_range,
     )
 
-    return p.build()
+    splot = p.render(offscreen=False)
+    splot._check_offscreen()
+    x = splot.to_numpy(transparent_bg=True, scale=(2, 2))
+
+    figsize = tuple((np.array(p.size) / 100) + 1)
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.imshow(x)
+    ax.axis("off")
+
+    p._add_colorbars()
+
+    return fig

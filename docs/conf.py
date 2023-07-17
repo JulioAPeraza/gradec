@@ -206,7 +206,6 @@ sphinx_gallery_conf = {
         "gradec": None
     },
     "within_subsection_order": FileNameSortKey,
-    "default_thumb_file": "_static/nimare_favicon.png",
     "thumbnail_size": (250, 250),
     "remove_config_comments": True,
     "download_all_examples": False,

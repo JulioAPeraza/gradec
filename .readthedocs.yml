@@ -13,13 +13,6 @@ build:
   os: ubuntu-22.04
   tools:
     python: "3.8"
-  jobs:
-    pre_create_environment:
-      - echo "Set up a headless display for example gallery"
-      - export DISPLAY=:99.0
-      - export VTKI_OFF_SCREEN=True
-      - Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
-      - sleep 3
 
 python:
   install:
