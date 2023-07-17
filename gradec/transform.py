@@ -3,7 +3,7 @@ import numpy as np
 from neuromaps import transforms
 from nilearn import image
 
-from gradec.utils import rm_fslr_medial_wall, zero_fslr_medial_wall
+from gradec.utils import _rm_fslr_medial_wall, _zero_fslr_medial_wall
 
 N_VERTICES = {
     "fsLR": {
@@ -23,9 +23,11 @@ def _mni152_to_fslr(metamaps, fslr_density="32k", neuromaps_dir=None):
         metamap = image.index_img(metamaps, map_i)
 
         metamap_lh, metamap_rh = transforms.mni152_to_fslr(metamap, fslr_density=fslr_density)
-        metamap_lh, metamap_rh = zero_fslr_medial_wall(metamap_lh, metamap_rh, neuromaps_dir)
+        metamap_lh, metamap_rh = _zero_fslr_medial_wall(metamap_lh, metamap_rh, neuromaps_dir)
         metamap_arr_lh = metamap_lh.agg_data()
         metamap_arr_rh = metamap_rh.agg_data()
-        metamap_fslr[map_i, :] = rm_fslr_medial_wall(metamap_arr_lh, metamap_arr_rh, neuromaps_dir)
+        metamap_fslr[map_i, :] = _rm_fslr_medial_wall(
+            metamap_arr_lh, metamap_arr_rh, neuromaps_dir
+        )
 
     return metamap_fslr
