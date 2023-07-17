@@ -17,7 +17,6 @@ def plot_surf_maps(
     color_range=None,
     threshold_=None,
     data_dir=None,
-    out_filename=None,
     dpi=300,
 ):
     """Plot surface maps."""
@@ -40,13 +39,5 @@ def plot_surf_maps(
         cbar=True,
         color_range=color_range,
     )
-    fig = p.build()
 
-    if out_filename:
-        fig.savefig(out_filename, bbox_inches="tight", dpi=dpi)
-        fig = None
-        plt.close()
-        gc.collect()
-        plt.clf()
-    else:
-        fig.show()
+    return p.build()
