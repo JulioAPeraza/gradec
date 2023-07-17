@@ -1,8 +1,6 @@
 """Plot module for gradec."""
-import gc
 import os
 
-from matplotlib import pyplot as plt
 from neuromaps.datasets import fetch_fslr
 from surfplot import Plot
 from surfplot.utils import threshold
