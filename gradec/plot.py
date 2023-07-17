@@ -20,6 +20,7 @@ def plot_surf_maps(
     out_filename=None,
     dpi=300,
 ):
+    """Plot surface maps."""
     data_dir = get_data_dir(data_dir)
     neuromaps_dir = get_data_dir(os.path.join(data_dir, "neuromaps"))
 

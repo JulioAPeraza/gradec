@@ -21,16 +21,19 @@ import sys
 from datetime import datetime
 from distutils.version import LooseVersion
 
+import brainspace
 import sphinx
 from m2r import MdInclude
 from sphinx_gallery.sorting import FileNameSortKey
 
+brainspace.OFF_SCREEN = True  # off screen rendering for examples
 sys.path.insert(0, os.path.abspath(os.path.pardir))
 sys.path.insert(0, os.path.abspath("sphinxext"))
 
 from github_link import make_linkcode_resolve
 
-import gradec
+# import gradec
+
 
 # -- General configuration ------------------------------------------------
 
