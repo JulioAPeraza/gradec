@@ -39,10 +39,10 @@ doc = [
     "m2r",
     "pydot >= 1.2.3",
     "recommonmark",
-    "sphinx >= 1.8",
+    "sphinx >= 2.0",
     "sphinx-argparse",
     "sphinx-copybutton",
-    "sphinx_gallery",
+    "sphinx-gallery",
     "sphinx_rtd_theme>=0.5.2",
     "sphinxcontrib-bibtex"
 ]

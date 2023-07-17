@@ -60,6 +60,7 @@ extensions = [
     "sphinxarg.ext",  # argparse
     "sphinxcontrib.bibtex",  # for foot-citations
     "recommonmark",  # markdown parser
+    "matplotlib.sphinxext.plot_directive",
 ]
 
 if LooseVersion(sphinx.__version__) < LooseVersion("1.4"):
@@ -78,7 +79,7 @@ master_doc = "index"
 
 # General information about the project.
 project = "Gradec"
-copyright = "2023-" + datetime.today().strftime("%Y") + ", Gradec developers"
+copyright = "2023-" + datetime.now().strftime("%Y") + ", Gradec developers"
 author = "Gradec developers"
 
 # The version info for the project you're documenting, acts as replacement for
@@ -166,7 +167,7 @@ linkcode_resolve = make_linkcode_resolve(
 # intersphinx
 # -----------------------------------------------------------------------------
 _python_version_str = "{0.major}.{0.minor}".format(sys.version_info)
-_python_doc_base = "https://docs.python.org/" + _python_version_str
+_python_doc_base = f"https://docs.python.org/{_python_version_str}"
 intersphinx_mapping = {
     "python": (_python_doc_base, None),
     "numpy": ("https://numpy.org/doc/stable/", (None, "./_intersphinx/numpy-objects.inv")),
@@ -181,25 +182,8 @@ intersphinx_mapping = {
     "nilearn": ("http://nilearn.github.io/stable/", None),
     "pymare": ("https://pymare.readthedocs.io/en/latest/", None),
     "skimage": ("https://scikit-image.org/docs/stable/", None),
-}
-
-# -- Extension configuration -------------------------------------------------
-intersphinx_mapping = {
     "brainspace": ("https://brainspace.readthedocs.io/en/latest/", None),
     "neuromaps": ("https://netneurolab.github.io/neuromaps/", None),
-}
-
-from brainspace.plotting.sphinx_gallery_scrapper import _get_sg_image_scraper
-from sphinx_gallery.sorting import FileNameSortKey
-
-sphinx_gallery_conf = {
-    "examples_dirs": "../examples",
-    "gallery_dirs": "auto_examples",
-    "thumbnail_size": (250, 250),
-    # 'plot_gallery': 'False',
-    "image_scrapers": ("matplotlib"),
-    "within_subsection_order": FileNameSortKey,
-    "download_all_examples": False,
 }
 
 # -----------------------------------------------------------------------------
@@ -223,7 +207,9 @@ sphinx_gallery_conf = {
     },
     "within_subsection_order": FileNameSortKey,
     "default_thumb_file": "_static/nimare_favicon.png",
+    "thumbnail_size": (250, 250),
     "remove_config_comments": True,
+    "download_all_examples": False,
 }
 
 # Generate the plots for the gallery
@@ -266,7 +252,8 @@ def generate_example_rst(app, what, name, obj, options, lines):
     folder = os.path.join(app.srcdir, "generated")
     if not os.path.isdir(folder):
         os.makedirs(folder)
-    examples_path = os.path.join(app.srcdir, "generated", "%s.examples" % name)
+
+    examples_path = os.path.join(app.srcdir, "generated", f"{name}.examples")
     if not os.path.exists(examples_path):
         # touch file
         open(examples_path, "w").close()
