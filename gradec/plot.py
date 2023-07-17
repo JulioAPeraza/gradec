@@ -47,3 +47,5 @@ def plot_surf_maps(
         plt.close()
         gc.collect()
         plt.clf()
+    else:
+        fig.show()
