@@ -183,6 +183,25 @@ intersphinx_mapping = {
     "skimage": ("https://scikit-image.org/docs/stable/", None),
 }
 
+# -- Extension configuration -------------------------------------------------
+intersphinx_mapping = {
+    "brainspace": ("https://brainspace.readthedocs.io/en/latest/", None),
+    "neuromaps": ("https://netneurolab.github.io/neuromaps/", None),
+}
+
+from brainspace.plotting.sphinx_gallery_scrapper import _get_sg_image_scraper
+from sphinx_gallery.sorting import FileNameSortKey
+
+sphinx_gallery_conf = {
+    "examples_dirs": "../examples",
+    "gallery_dirs": "auto_examples",
+    "thumbnail_size": (250, 250),
+    # 'plot_gallery': 'False',
+    "image_scrapers": ("matplotlib"),
+    "within_subsection_order": FileNameSortKey,
+    "download_all_examples": False,
+}
+
 # -----------------------------------------------------------------------------
 # Sphinx gallery
 # -----------------------------------------------------------------------------
