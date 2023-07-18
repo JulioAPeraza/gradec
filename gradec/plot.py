@@ -1,6 +1,12 @@
 """Plot module for gradec."""
 import os
 
+import matplotlib
+
+matplotlib.use("Agg")
+
+import matplotlib.pyplot as plt
+import numpy as np
 from neuromaps.datasets import fetch_fslr
 from surfplot import Plot
 from surfplot.utils import threshold
@@ -15,7 +21,6 @@ def plot_surf_maps(
     color_range=None,
     threshold_=None,
     data_dir=None,
-    dpi=300,
 ):
     """Plot surface maps."""
     data_dir = get_data_dir(data_dir)
@@ -38,4 +43,15 @@ def plot_surf_maps(
         color_range=color_range,
     )
 
-    return p
+    p_obj = p.render()
+    p_obj._check_offscreen()
+    x = p_obj.to_numpy(transparent_bg=True, scale=(2, 2))
+
+    figsize = tuple((np.array(p.size) / 100) + 1)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.imshow(x)
+    ax.axis("off")
+    p._add_colorbars()
+
+    return fig

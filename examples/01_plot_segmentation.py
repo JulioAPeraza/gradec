@@ -29,8 +29,7 @@ hemi_vertices = full_vertices // 2
 prin_grad = add_fslr_medial_wall(principal_gradient)  # Add medial wall for plotting
 prin_grad_lh, prin_grad_rh = prin_grad[:hemi_vertices], prin_grad[hemi_vertices:full_vertices]
 
-plot_obj = plot_surf_maps(prin_grad_lh, prin_grad_rh)
-fig = plot_obj.build()
+fig = plot_surf_maps(prin_grad_lh, prin_grad_rh)
 fig.show()
 
 
@@ -49,6 +48,5 @@ grad_maps = segmentation.transform()
 for grad_map in grad_maps:
     grad_map = add_fslr_medial_wall(grad_map)
     grad_map_lh, grad_map_rh = grad_map[:hemi_vertices], grad_map[hemi_vertices:full_vertices]
-    plot_obj = plot_surf_maps(grad_map_lh, grad_map_rh)
-    fig = plot_obj.build()
+    fig = plot_surf_maps(grad_map_lh, grad_map_rh)
     fig.show()
