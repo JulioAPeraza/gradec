@@ -201,7 +201,6 @@ sphinx_gallery_conf = {
         "gradec": None
     },
     "within_subsection_order": FileNameSortKey,
-    "image_scrapers": ("matplotlib"),
     "thumbnail_size": (250, 250),
     "remove_config_comments": True,
     "download_all_examples": False,

@@ -2,14 +2,13 @@
 
 .. _segmentation:
 
+
 ====================================================
 Segmentation of the Cortical Gradient
 ====================================================
 
 Gradec provides two methods for splitting the gradient spectrum.
 """
-from IPython.display import display
-
 from gradec.fetcher import _fetch_principal_gradients
 
 ###############################################################################
@@ -32,8 +31,8 @@ prin_grad = add_fslr_medial_wall(principal_gradient)  # Add medial wall for plot
 prin_grad_lh, prin_grad_rh = prin_grad[:hemi_vertices], prin_grad[hemi_vertices:full_vertices]
 
 p_obj = plot_surf_maps(prin_grad_lh, prin_grad_rh)
-img = p_obj.show(embed_nb=True, interactive=False)
-display(img)
+p_obj.show(embed_nb=True, interactive=False)
+# display(img)
 
 ###############################################################################
 # Segment the principal gradient
@@ -51,5 +50,5 @@ for grad_map in grad_maps:
     grad_map = add_fslr_medial_wall(grad_map)
     grad_map_lh, grad_map_rh = grad_map[:hemi_vertices], grad_map[hemi_vertices:full_vertices]
     p_obj = plot_surf_maps(grad_map_lh, grad_map_rh)
-    img = p_obj.show(embed_nb=True, interactive=False)
-    display(img)
+    p_obj.show(embed_nb=True, interactive=False)
+    # display(img)
