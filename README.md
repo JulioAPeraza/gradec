@@ -2,6 +2,9 @@
 A Python library for meta-analytic functional decoding of cortical gradient of functional 
 connectivity.
 
+[![Latest Version](https://img.shields.io/pypi/v/gradec.svg)](https://pypi.python.org/pypi/gradec/)
+[![PyPI - Python Version](https://img.shields.io/pypi/pyversions/gradec.svg)](https://pypi.python.org/pypi/gradec/)
+[![DOI](https://zenodo.org/badge/650206207.svg)](https://zenodo.org/badge/latestdoi/650206207)
 [![License](https://img.shields.io/badge/license-Apache--2.0-blue.svg)](https://opensource.org/license/apache-2-0)
 [![Test Status](https://github.com/JulioAPeraza/gradec/actions/workflows/testing.yml/badge.svg)](https://github.com/JulioAPeraza/gradec/actions/workflows/testing.yml)
 [![codecov](https://codecov.io/gh/JulioAPeraza/gradec/branch/main/graph/badge.svg?token=JTEHFX20B1)](https://codecov.io/gh/JulioAPeraza/gradec)
