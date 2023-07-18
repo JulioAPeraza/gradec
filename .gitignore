@@ -6,6 +6,9 @@ __pycache__/
 
 # Distribution / packaging
 *.egg-info/*
+build
+dist/
+gradec/_version.py
 
 *.DS_Store
 /temp

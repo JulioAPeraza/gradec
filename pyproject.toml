@@ -1,5 +1,6 @@
 [build-system]
-requires = ["setuptools >= 61.0.0", "wheel"]
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "gradec"
@@ -33,6 +34,7 @@ dynamic = ["version"]
 
 [project.urls]
 Homepage = "https://github.com/JulioAPeraza/gradec"
+Documentation = "https://gradec.readthedocs.io/en/latest/"
 
 [project.optional-dependencies]
 doc = [
@@ -74,13 +76,23 @@ tests = ["gradec[test]"]
 minimum = ["gradec[min]"]
 all = ["gradec[doc,dev,test]"]
 
+[tool.hatch.build.targets.wheel]
+packages = ["gradec"]
+exclude = ["temp"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "gradec/_version.py"
+
 [tool.flake8]
 max-line-length = 99
 exclude = "*build/"
 ignore = ["E203", "E402", "E722", "W503"]
 per-file-ignores = """
     */__init__.py:D401
-    nimare/utils.py:D401
+    gradec/utils.py:D401
 """
 docstring-convention = "numpy"
 
