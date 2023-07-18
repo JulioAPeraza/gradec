@@ -38,4 +38,4 @@ def plot_surf_maps(
         color_range=color_range,
     )
 
-    return p.build()
+    return p

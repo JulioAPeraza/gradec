@@ -17,14 +17,12 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 import os
-import subprocess
 import sys
 from datetime import datetime
 from distutils.version import LooseVersion
 
 import brainspace
 import sphinx
-import vtk
 from m2r import MdInclude
 from sphinx_gallery.sorting import FileNameSortKey
 
@@ -35,14 +33,6 @@ sys.path.insert(0, os.path.abspath("sphinxext"))
 from github_link import make_linkcode_resolve
 
 # import gradec
-
-# Activates a virtual (headless) framebuffer for rendering 3D scenes via VTK.
-vtk.OFFSCREEN = True
-os.environ["DISPLAY"] = ":99.0"
-
-commands = ["Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &", "sleep 3", 'exec "$@"']
-for command in commands:
-    subprocess.call(command, shell=True)
 
 # -- General configuration ------------------------------------------------
 
