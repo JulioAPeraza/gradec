@@ -42,6 +42,18 @@ def plot_surf_maps(
         cbar=True,
         color_range=color_range,
     )
-    # Plotter.close_all()
 
-    return p.build()
+    plotter_ = p.render()
+    plotter_._check_offscreen()
+    x = plotter_.to_numpy(transparent_bg=True, scale=(2, 2))
+    Plotter.close_all()
+
+    figsize = tuple((np.array(p.size) / 100) + 1)
+
+    fig, ax = plt.subplots(figsize=figsize)
+    ax.imshow(x)
+    ax.axis("off")
+    p._add_colorbars()
+
+    # fig = p.build()
+    return fig

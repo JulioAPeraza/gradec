@@ -44,7 +44,8 @@ doc = [
     "sphinx-copybutton",
     "sphinx-gallery",
     "sphinx_rtd_theme>=0.5.2",
-    "sphinxcontrib-bibtex"
+    "sphinxcontrib-bibtex",
+    "vtk",
 ]
 dev = [
     "black",
