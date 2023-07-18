@@ -1,13 +1,17 @@
 """Plot module for gradec."""
 import os
 
+import brainspace
 import matplotlib.pyplot as plt
 import numpy as np
+from brainspace.plotting.base import Plotter
 from neuromaps.datasets import fetch_fslr
 from surfplot import Plot
 from surfplot.utils import threshold
 
 from gradec.utils import get_data_dir
+
+brainspace.OFF_SCREEN = True  # off screen rendering for examples
 
 
 def plot_surf_maps(
@@ -38,5 +42,6 @@ def plot_surf_maps(
         cbar=True,
         color_range=color_range,
     )
+    # Plotter.close_all()
 
-    return p
+    return p.build()
