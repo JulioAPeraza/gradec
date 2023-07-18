@@ -2,9 +2,6 @@
 import os
 
 import brainspace
-import matplotlib.pyplot as plt
-import numpy as np
-from brainspace.plotting.base import Plotter
 from neuromaps.datasets import fetch_fslr
 from surfplot import Plot
 from surfplot.utils import threshold
@@ -43,17 +40,4 @@ def plot_surf_maps(
         color_range=color_range,
     )
 
-    plotter_ = p.render()
-    plotter_._check_offscreen()
-    x = plotter_.to_numpy(transparent_bg=True, scale=(2, 2))
-    Plotter.close_all()
-
-    figsize = tuple((np.array(p.size) / 100) + 1)
-
-    fig, ax = plt.subplots(figsize=figsize)
-    ax.imshow(x)
-    ax.axis("off")
-    p._add_colorbars()
-
-    # fig = p.build()
-    return fig
+    return p
