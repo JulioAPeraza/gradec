@@ -18,6 +18,8 @@ from gradec.fetcher import _fetch_principal_gradients
 
 principal_gradient = _fetch_principal_gradients()
 
+from brainspace.plotting.base import Plotter
+
 ###############################################################################
 # Plot principal gradient
 # ``````````````````````````````````````````````````````````````````````````````
@@ -33,6 +35,7 @@ prin_grad_lh, prin_grad_rh = prin_grad[:hemi_vertices], prin_grad[hemi_vertices:
 
 p_obj = plot_surf_maps(prin_grad_lh, prin_grad_rh)
 fig = p_obj.build()
+Plotter.close_all()
 fig.show()
 
 ###############################################################################
@@ -52,4 +55,5 @@ for grad_map in grad_maps:
     grad_map_lh, grad_map_rh = grad_map[:hemi_vertices], grad_map[hemi_vertices:full_vertices]
     p_obj = plot_surf_maps(grad_map_lh, grad_map_rh)
     fig = p_obj.build()
+    Plotter.close_all()
     fig.show()
