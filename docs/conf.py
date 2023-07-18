@@ -37,7 +37,7 @@ from github_link import make_linkcode_resolve
 # -- General configuration ------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-needs_sphinx = "3.5"
+# needs_sphinx = "3.5"
 
 # generate autosummary even if no references
 autosummary_generate = True
@@ -204,6 +204,7 @@ sphinx_gallery_conf = {
         "gradec": None
     },
     "within_subsection_order": FileNameSortKey,
+    "image_scrapers": ("matplotlib"),
     "thumbnail_size": (250, 250),
     "remove_config_comments": True,
     "download_all_examples": False,
