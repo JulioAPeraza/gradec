@@ -45,7 +45,7 @@ doc = [
     "sphinx-gallery",
     "sphinx_rtd_theme>=0.5.2",
     "sphinxcontrib-bibtex",
-    "vtk",
+    "ipython",
 ]
 dev = [
     "black",
