@@ -26,9 +26,7 @@ dependencies = [
     "nimare",
     "neuromaps",
     "netneurotools",
-    "pandas",
     "surfplot",
-    "scipy<1.8.0",
 ]
 dynamic = ["version"]
 
