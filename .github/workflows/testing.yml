@@ -36,12 +36,9 @@ jobs:
     runs-on: ${{ matrix.os }}
     strategy:
         fail-fast: false
-        # Test on "ubuntu-latest" and "3.8" for now
-        # os: ["ubuntu-latest", "macos-latest"]
-        # python-version: ["3.8", "3.9", "3.10", "3.11"]
         matrix:
-            os: ["ubuntu-latest"]
-            python-version: ["3.8"]
+            os: ["ubuntu-latest", "macos-latest"]
+            python-version: ["3.8", "3.9", "3.10"]
 
     defaults:
       run:

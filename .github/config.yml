@@ -5,11 +5,11 @@ newPRWelcomeComment: >
   Thanks for opening this pull request!
   We have detected this is the first time you have contributed
   to *gradec*.
-  Please check out our [contributing guidelines](https://github.com/neurostuff/gradec/blob/main/CONTRIBUTING.md).
+  Please check out our [contributing guidelines](https://github.com/JulioAPeraza/gradec/blob/main/CONTRIBUTING.md).
 
   We invite you to list yourself as a *Gradec* contributor, so if your name
   is not already mentioned, please modify the
-  [``.zenodo.json``](https://github.com/neurostuff/gradec/blob/main/.zenodo.json)
+  [``.zenodo.json``](https://github.com/JulioAPeraza/gradec/blob/main/.zenodo.json)
   file with your data right above Angie's entry. Example:
 
   ```
