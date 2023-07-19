@@ -25,6 +25,7 @@ classifiers = [
 dependencies = [
     "nimare",
     "neuromaps",
+    "scipy<1.8.0", # temporary fix for netneurotools issue
     "netneurotools",
     "surfplot",
 ]

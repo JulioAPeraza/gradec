@@ -31,7 +31,7 @@ pip install git+https://github.com/JulioAPeraza/gradec.git
 ## Citing gradec
 
 If you use gradec in your research, we recommend citing the Zenodo DOI associated with the gradec version you used.
-You can find the Zenodo DOI associated with each gradec release at .
+You can find the Zenodo DOI associated with each gradec release at https://zenodo.org/record/8161766.
 
 ## Contributing
 
