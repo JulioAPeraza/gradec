@@ -19,6 +19,7 @@ OSF_DICT = {
     "source-neuroquery_desc-gclda_features.csv": "trcxs",
     "source-neuroquery_desc-gclda_space-civet_density-41k_metamaps.npz": "qbn7g",
     "source-neuroquery_desc-gclda_space-fsLR_density-32k_metamaps.npz": "ey6cw",
+    "source-neuroquery_desc-gclda_space-fsLR_density-164k_metamaps.npz": "4erpq",
     "source-neuroquery_desc-gclda_space-fsaverage_density-3k_metamaps.npz": "jg34m",
     "source-neuroquery_desc-gclda_space-fsaverage_density-10k_metamaps.npz": "sh9eq",
     "source-neuroquery_desc-gclda_space-fsaverage_density-41k_metamaps.npz": "ca2hp",
@@ -26,6 +27,7 @@ OSF_DICT = {
     "source-neuroquery_desc-lda_features.csv": "u68w7",
     "source-neuroquery_desc-lda_space-civet_density-41k_metamaps.npz": "74trb",
     "source-neuroquery_desc-lda_space-fsLR_density-32k_metamaps.npz": "k4xza",
+    "source-neuroquery_desc-lda_space-fsLR_density-164k_metamaps.npz": "wvznp",
     "source-neuroquery_desc-lda_space-fsaverage_density-3k_metamaps.npz": "xbrgd",
     "source-neuroquery_desc-lda_space-fsaverage_density-41k_metamaps.npz": "hu3y4",
     "source-neuroquery_desc-lda_space-fsaverage_density-10k_metamaps.npz": "qwb5u",
@@ -33,13 +35,15 @@ OSF_DICT = {
     "source-neuroquery_desc-term_features.csv": "xtjna",
     "source-neuroquery_desc-term_space-civet_density-41k_metamaps.npz": "vw9fr",
     "source-neuroquery_desc-term_space-fsLR_density-32k_metamaps.npz": "38fh4",
+    "source-neuroquery_desc-term_space-fsLR_density-164k_metamaps.npz": "",  # Updt
     "source-neuroquery_desc-term_space-fsaverage_density-3k_metamaps.npz": "b5jme",
     "source-neuroquery_desc-term_space-fsaverage_density-10k_metamaps.npz": "dt3j4",
     "source-neuroquery_desc-term_space-fsaverage_density-41k_metamaps.npz": "9xsqb",
-    "source-neuroquery_desc-term_space-fsaverage_density-164k_metamaps.npz": "",
+    "source-neuroquery_desc-term_space-fsaverage_density-164k_metamaps.npz": "",  # Updt
     "source-neurosynth_desc-gclda_features.csv": "jcrkd",
     "source-neurosynth_desc-gclda_space-civet_density-41k_metamaps.npz": "swp3c",
     "source-neurosynth_desc-gclda_space-fsLR_density-32k_metamaps.npz": "hwdft",
+    "source-neurosynth_desc-gclda_space-fsLR_density-164k_metamaps.npz": "qzyvj",
     "source-neurosynth_desc-gclda_space-fsaverage_density-3k_metamaps.npz": "r5p7x",
     "source-neurosynth_desc-gclda_space-fsaverage_density-10k_metamaps.npz": "w2xj3",
     "source-neurosynth_desc-gclda_space-fsaverage_density-41k_metamaps.npz": "dw3t9",
@@ -47,6 +51,7 @@ OSF_DICT = {
     "source-neurosynth_desc-lda_features.csv": "ve3nj",
     "source-neurosynth_desc-lda_space-civet_density-41k_metamaps.npz": "86u59",
     "source-neurosynth_desc-lda_space-fsLR_density-32k_metamaps.npz": "9ftkm",
+    "source-neurosynth_desc-lda_space-fsLR_density-164k_metamaps.npz": "bxefz",
     "source-neurosynth_desc-lda_space-fsaverage_density-3k_metamaps.npz": "pb9mw",
     "source-neurosynth_desc-lda_space-fsaverage_density-10k_metamaps.npz": "urg3a",
     "source-neurosynth_desc-lda_space-fsaverage_density-41k_metamaps.npz": "dbv4z",
@@ -54,11 +59,18 @@ OSF_DICT = {
     "source-neurosynth_desc-term_features.csv": "hyjrk",
     "source-neurosynth_desc-term_space-civet_density-41k_metamaps.npz": "rwxta",
     "source-neurosynth_desc-term_space-fsLR_density-32k_metamaps.npz": "ju2tk",
+    "source-neurosynth_desc-term_space-fsLR_density-164k_metamaps.npz": "dzm39",
     "source-neurosynth_desc-term_space-fsaverage_density-3k_metamaps.npz": "hvw6x",
     "source-neurosynth_desc-term_space-fsaverage_density-10k_metamaps.npz": "q2txn",
     "source-neurosynth_desc-term_space-fsaverage_density-41k_metamaps.npz": "cyuqn",
     "source-neurosynth_desc-term_space-fsaverage_density-164k_metamaps.npz": "s8txr",
+    "source-vasa2018_desc-null1000_space-civet_density-41k_metamaps.npz": "8svr2",  # Updt
     "source-vasa2018_desc-null1000_space-fsLR_density-32k_spinsamples.npz": "q5yv6",
+    "source-vasa2018_desc-null1000_space-fsLR_density-164k_spinsamples.npz": "nj3cr",  # Updt
+    "source-vasa2018_desc-null1000_space-fsaverage_density-3k_spinsamples.npz": "8vjxm",  # Updt
+    "source-vasa2018_desc-null1000_space-fsaverage_density-10k_spinsamples.npz": "yz59g",  # Updt
+    "source-vasa2018_desc-null1000_space-fsaverage_density-41k_spinsamples.npz": "esr9y",  # Updt
+    "source-vasa2018_desc-null1000_space-fsaverage_density-164k_spinsamples.npz": "e956f",  # Updt
     "gclda_neurosynth_model.pkl.gz": "bg8ef",
     "gclda_neuroquery_model.pkl.gz": "vsm65",
     "hcp-s1200_gradients.npy": "t95gk",
