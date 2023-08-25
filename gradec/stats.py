@@ -22,8 +22,8 @@ def _gen_nullsamples(coords, hemi, seed):
     )
 
 
-def _gen_spinsamples(neuromaps_dir=None, n_samples=1, n_cores=1):
-    atlas = fetch_atlas("fsLR", "32k", data_dir=neuromaps_dir, verbose=0)
+def _gen_spinsamples(space="fsLR", density="32k", neuromaps_dir=None, n_samples=1, n_cores=1):
+    atlas = fetch_atlas(space, density, data_dir=neuromaps_dir, verbose=0)
 
     sphere_lh, sphere_rh = atlas["sphere"]
     coords_lh, _ = nib.load(sphere_lh).agg_data()

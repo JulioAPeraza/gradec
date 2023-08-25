@@ -16,23 +16,53 @@ from gradec.utils import get_data_dir
 
 OSF_URL = "https://osf.io/{}/download"
 OSF_DICT = {
-    "term_neurosynth_metamaps.npz": "ju2tk",
-    "term_neurosynth_features.csv": "hyjrk",
-    "term_neuroquery_metamaps.npz": "38fh4",
-    "term_neuroquery_features.csv": "xtjna",
-    "lda_neurosynth_metamaps.npz": "9ftkm",
-    "lda_neurosynth_features.csv": "ve3nj",
-    "lda_neuroquery_metamaps.npz": "k4xza",
-    "lda_neuroquery_features.csv": "u68w7",
-    "gclda_neurosynth_metamaps.npz": "hwdft",
-    "gclda_neurosynth_features.csv": "jcrkd",
+    "source-neuroquery_desc-gclda_features.csv": "trcxs",
+    "source-neuroquery_desc-gclda_space-civet_density-41k_metamaps.npz": "qbn7g",
+    "source-neuroquery_desc-gclda_space-fsLR_density-32k_metamaps.npz": "ey6cw",
+    "source-neuroquery_desc-gclda_space-fsaverage_density-3k_metamaps.npz": "jg34m",
+    "source-neuroquery_desc-gclda_space-fsaverage_density-10k_metamaps.npz": "sh9eq",
+    "source-neuroquery_desc-gclda_space-fsaverage_density-41k_metamaps.npz": "ca2hp",
+    "source-neuroquery_desc-gclda_space-fsaverage_density-164k_metamaps.npz": "4ne7f",
+    "source-neuroquery_desc-lda_features.csv": "u68w7",
+    "source-neuroquery_desc-lda_space-civet_density-41k_metamaps.npz": "74trb",
+    "source-neuroquery_desc-lda_space-fsLR_density-32k_metamaps.npz": "k4xza",
+    "source-neuroquery_desc-lda_space-fsaverage_density-3k_metamaps.npz": "xbrgd",
+    "source-neuroquery_desc-lda_space-fsaverage_density-41k_metamaps.npz": "hu3y4",
+    "source-neuroquery_desc-lda_space-fsaverage_density-10k_metamaps.npz": "qwb5u",
+    "source-neuroquery_desc-lda_space-fsaverage_density-164k_metamaps.npz": "qzhrn",
+    "source-neuroquery_desc-term_features.csv": "xtjna",
+    "source-neuroquery_desc-term_space-civet_density-41k_metamaps.npz": "vw9fr",
+    "source-neuroquery_desc-term_space-fsLR_density-32k_metamaps.npz": "38fh4",
+    "source-neuroquery_desc-term_space-fsaverage_density-3k_metamaps.npz": "b5jme",
+    "source-neuroquery_desc-term_space-fsaverage_density-10k_metamaps.npz": "dt3j4",
+    "source-neuroquery_desc-term_space-fsaverage_density-41k_metamaps.npz": "9xsqb",
+    "source-neuroquery_desc-term_space-fsaverage_density-164k_metamaps.npz": "",
+    "source-neurosynth_desc-gclda_features.csv": "jcrkd",
+    "source-neurosynth_desc-gclda_space-civet_density-41k_metamaps.npz": "swp3c",
+    "source-neurosynth_desc-gclda_space-fsLR_density-32k_metamaps.npz": "hwdft",
+    "source-neurosynth_desc-gclda_space-fsaverage_density-3k_metamaps.npz": "r5p7x",
+    "source-neurosynth_desc-gclda_space-fsaverage_density-10k_metamaps.npz": "w2xj3",
+    "source-neurosynth_desc-gclda_space-fsaverage_density-41k_metamaps.npz": "dw3t9",
+    "source-neurosynth_desc-gclda_space-fsaverage_density-164k_metamaps.npz": "mw2pa",
+    "source-neurosynth_desc-lda_features.csv": "ve3nj",
+    "source-neurosynth_desc-lda_space-civet_density-41k_metamaps.npz": "86u59",
+    "source-neurosynth_desc-lda_space-fsLR_density-32k_metamaps.npz": "9ftkm",
+    "source-neurosynth_desc-lda_space-fsaverage_density-3k_metamaps.npz": "pb9mw",
+    "source-neurosynth_desc-lda_space-fsaverage_density-10k_metamaps.npz": "urg3a",
+    "source-neurosynth_desc-lda_space-fsaverage_density-41k_metamaps.npz": "dbv4z",
+    "source-neurosynth_desc-lda_space-fsaverage_density-164k_metamaps.npz": "7rw8c",
+    "source-neurosynth_desc-term_features.csv": "hyjrk",
+    "source-neurosynth_desc-term_space-civet_density-41k_metamaps.npz": "rwxta",
+    "source-neurosynth_desc-term_space-fsLR_density-32k_metamaps.npz": "ju2tk",
+    "source-neurosynth_desc-term_space-fsaverage_density-3k_metamaps.npz": "hvw6x",
+    "source-neurosynth_desc-term_space-fsaverage_density-10k_metamaps.npz": "q2txn",
+    "source-neurosynth_desc-term_space-fsaverage_density-41k_metamaps.npz": "cyuqn",
+    "source-neurosynth_desc-term_space-fsaverage_density-164k_metamaps.npz": "s8txr",
+    "source-vasa2018_desc-null1000_space-fsLR_density-32k_spinsamples.npz": "q5yv6",
     "gclda_neurosynth_model.pkl.gz": "bg8ef",
-    "gclda_neuroquery_metamaps.npz": "ey6cw",
-    "gclda_neuroquery_features.csv": "trcxs",
     "gclda_neuroquery_model.pkl.gz": "vsm65",
     "hcp-s1200_gradients.npy": "t95gk",
     "principal_gradient.npy": "5th7c",
-    "spinsamples_fslr.npz": "q5yv6",
     "neuroquery_counts": "p39mg",
 }
 
@@ -111,7 +141,7 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     data_dir = get_data_dir(data_dir)
     dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
 
-    filename = f"{model_nm}_{dset_nm}_features.csv"
+    filename = f"source-{dset_nm}_desc-{model_nm}_features.csv"
     url = _get_osf_url(filename)
 
     features_fn = _my_fetch_file(
@@ -127,7 +157,16 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     return df.values.tolist()
 
 
-def _fetch_metamaps(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
+def _fetch_metamaps(
+    dset_nm,
+    model_nm,
+    space="fsLR",
+    density="32k",
+    data_dir=None,
+    overwrite=False,
+    resume=True,
+    verbose=1,
+):
     """Fetch meta-analytic maps from OSF.
 
     Parameters
@@ -154,7 +193,7 @@ def _fetch_metamaps(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     data_dir = get_data_dir(data_dir)
     dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
 
-    filename = f"{model_nm}_{dset_nm}_metamaps.npz"
+    filename = f"source-{dset_nm}_desc-{model_nm}_space-{space}_density-{density}_metamaps.npz"
     url = _get_osf_url(filename)
 
     metamaps_fn = _my_fetch_file(
@@ -169,7 +208,15 @@ def _fetch_metamaps(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
     return np.load(metamaps_fn)["arr"]
 
 
-def _fetch_spinsamples(n_samples=1000, data_dir=None, overwrite=False, resume=True, verbose=1):
+def _fetch_spinsamples(
+    n_samples=1000,
+    space="fsLR",
+    density="32k",
+    data_dir=None,
+    overwrite=False,
+    resume=True,
+    verbose=1,
+):
     """Fetch spin samples from OSF.
 
     Parameters
@@ -191,7 +238,7 @@ def _fetch_spinsamples(n_samples=1000, data_dir=None, overwrite=False, resume=Tr
     """
     data_dir = get_data_dir(data_dir)
 
-    filename = "spinsamples_fslr.npz"
+    filename = f"source-vasa2018_desc-null1000_space-{space}_density-{density}_spinsamples.npz"
     url = _get_osf_url(filename)
 
     spinsamples_fn = _my_fetch_file(
