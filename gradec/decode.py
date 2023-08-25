@@ -67,6 +67,7 @@ class Decoder(metaclass=ABCMeta):
         density="32k",
         feature_group=None,
         use_fetchers=True,
+        calc_pvals=True,
         data_dir=None,
         n_cores=1,
     ):
@@ -74,6 +75,7 @@ class Decoder(metaclass=ABCMeta):
         self.density = density
         self.feature_group = feature_group
         self.use_fetchers = use_fetchers
+        self.calc_pvals = calc_pvals
         self.data_dir = op.abspath(data_dir) if data_dir else op.abspath(".")
         self.neuromaps_dir = get_data_dir(op.join(self.data_dir, "neuromaps"))
         self.n_cores = _check_ncores(n_cores)
@@ -120,21 +122,29 @@ class Decoder(metaclass=ABCMeta):
 
             # This feature is desabled for now because it takes too long.
             """
-            spinsamples_surf = _gen_spinsamples(
-                self.space,
-                self.density,
-                self.neuromaps_dir,
-                self.n_samples,
-                self.n_cores,
-            )
+            if self.calc_pvals:
+                spinsamples_surf = _gen_spinsamples(
+                    self.space,
+                    self.density,
+                    self.neuromaps_dir,
+                    self.n_samples,
+                    self.n_cores,
+                )
             """
 
-        spinsamples_surf = _fetch_spinsamples(self.n_samples, self.data_dir)
+        if self.calc_pvals:
+            spinsamples_surf = _fetch_spinsamples(
+                n_samples=self.n_samples,
+                space=self.space,
+                density=self.density,
+                data_dir=self.data_dir,
+            )
+            self.spinsamples_ = spinsamples_surf
+        else:
+            self.spinsamples_ = None
 
         self.maps_ = metamaps_surf
         self.features_ = _conform_features(features, self.model_nm, self.n_top_words)
-
-        self.spinsamples_ = spinsamples_surf
 
 
 class CorrelationDecoder(Decoder):
