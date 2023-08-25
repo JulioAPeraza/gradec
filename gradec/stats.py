@@ -53,7 +53,7 @@ def _permtest_pearson(grad_map, metamaps, spinsamples):
     n_perm = spinsamples.shape[1]
     corrs = pearson(grad_map, metamaps)
 
-    if spinsamples:
+    if spinsamples is not None:
         # Calculate null correlations
         grad_map_null = grad_map[spinsamples]
         corrs_null = [pearson(grad_map_null[:, p_i], metamaps) for p_i in range(n_perm)]
