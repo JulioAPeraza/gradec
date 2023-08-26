@@ -1,7 +1,7 @@
 """Plot module for gradec."""
 import os
 
-from neuromaps.datasets import fetch_fslr
+from neuromaps.datasets import fetch_civet, fetch_fsaverage, fetch_fslr
 from surfplot import Plot
 from surfplot.utils import threshold
 
@@ -11,7 +11,10 @@ from gradec.utils import get_data_dir
 def plot_surf_maps(
     lh_grad,
     rh_grad,
+    space="fsLR",
+    density="32k",
     cmap="viridis",
+    title=None,
     color_range=None,
     threshold_=None,
     data_dir=None,
@@ -20,7 +23,13 @@ def plot_surf_maps(
     data_dir = get_data_dir(data_dir)
     neuromaps_dir = get_data_dir(os.path.join(data_dir, "neuromaps"))
 
-    surfaces = fetch_fslr(density="32k", data_dir=neuromaps_dir)
+    if space == "fsLR":
+        surfaces = fetch_fslr(density=density, data_dir=neuromaps_dir)
+    elif space == "fsaverage":
+        surfaces = fetch_fsaverage(density=density, data_dir=neuromaps_dir)
+    elif space == "civet":
+        surfaces = fetch_civet(density=density, data_dir=neuromaps_dir)
+
     lh, rh = surfaces["inflated"]
     sulc_lh, sulc_rh = surfaces["sulc"]
 
@@ -37,4 +46,9 @@ def plot_surf_maps(
         color_range=color_range,
     )
 
-    return p
+    fig = p.build()
+
+    if title is not None:
+        fig.axes[0].set_title(title, pad=-3)
+
+    return fig

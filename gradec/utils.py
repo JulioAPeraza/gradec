@@ -12,6 +12,40 @@ from sklearn.metrics import pairwise_distances
 
 LGR = logging.getLogger(__name__)
 
+# Number of vertices in total without the medial wall
+N_VERTICES = {
+    "fsLR": {
+        "32k": 59412,
+        "164k": 298261,
+    },
+    "fsaverage": {
+        "3k": 4661,
+        "10k": 18715,
+        "41k": 74947,
+        "164k": 299881,
+    },
+    "civet": {
+        "41k": 76910,
+    },
+}
+
+# Number of vertices per hemisphere including the medial wall
+N_VERTICES_PH = {
+    "fsLR": {
+        "32k": 32492,
+        "164k": 163842,
+    },
+    "fsaverage": {
+        "3k": 2562,
+        "10k": 10242,
+        "41k": 40962,
+        "164k": 163842,
+    },
+    "civet": {
+        "41k": 40962,
+    },
+}
+
 
 def _reorder_matrix(mat, reorder):
     """Reorder a matrix.
@@ -84,7 +118,14 @@ def get_data_dir(data_dir=None):
     return data_dir
 
 
-def _rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
+def _rm_medial_wall(
+    data_lh,
+    data_rh,
+    space="fsLR",
+    density="32k",
+    join=True,
+    neuromaps_dir=None,
+):
     """Remove medial wall from data in fsLR space.
 
     Data in 32k fs_LR space (e.g., Human Connectome Project data) often in
@@ -112,10 +153,11 @@ def _rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
     `data` has the incorrect number of vertices (59412 or 64984 only
         accepted)
     """
-    assert data_lh.shape[0] == 32492
-    assert data_rh.shape[0] == 32492
+    assert data_lh.shape[0] == N_VERTICES_PH[space][density]
+    assert data_rh.shape[0] == N_VERTICES_PH[space][density]
 
-    atlas = fetch_atlas("fsLR", "32k", data_dir=neuromaps_dir, verbose=0)
+    atlas = fetch_atlas(space, density, data_dir=neuromaps_dir, verbose=0)
+
     medial_lh, medial_rh = atlas["medial"]
     wall_lh = nib.load(medial_lh).agg_data()
     wall_rh = nib.load(medial_rh).agg_data()
@@ -127,13 +169,14 @@ def _rm_fslr_medial_wall(data_lh, data_rh, neuromaps_dir, join=True):
         return data_lh, data_rh
 
     data = np.hstack((data_lh, data_rh))
-    assert data.shape[0] == 59412
+    assert data.shape[0] == N_VERTICES[space][density]
     return data
 
 
-def _zero_fslr_medial_wall(data_lh, data_rh, neuromaps_dir):
+def _zero_medial_wall(data_lh, data_rh, space="fsLR", density="32k", neuromaps_dir=None):
     """Remove medial wall from data in fsLR space."""
-    atlas = fetch_atlas("fsLR", "32k", data_dir=neuromaps_dir, verbose=0)
+    atlas = fetch_atlas(space, density, data_dir=neuromaps_dir, verbose=0)
+
     medial_lh, medial_rh = atlas["medial"]
     medial_arr_lh = nib.load(medial_lh).agg_data()
     medial_arr_rh = nib.load(medial_rh).agg_data()

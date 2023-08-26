@@ -1,6 +1,7 @@
 """Stats module for gradec."""
 import nibabel as nib
 import numpy as np
+import pandas as pd
 from joblib import Parallel, delayed
 from netneurotools.stats import gen_spinsamples
 from neuromaps.datasets import fetch_atlas
@@ -22,8 +23,8 @@ def _gen_nullsamples(coords, hemi, seed):
     )
 
 
-def _gen_spinsamples(neuromaps_dir=None, n_samples=1, n_cores=1):
-    atlas = fetch_atlas("fsLR", "32k", data_dir=neuromaps_dir, verbose=0)
+def _gen_spinsamples(space="fsLR", density="32k", neuromaps_dir=None, n_samples=1, n_cores=1):
+    atlas = fetch_atlas(space, density, data_dir=neuromaps_dir, verbose=0)
 
     sphere_lh, sphere_rh = atlas["sphere"]
     coords_lh, _ = nib.load(sphere_lh).agg_data()
@@ -47,19 +48,23 @@ def _gen_spinsamples(neuromaps_dir=None, n_samples=1, n_cores=1):
     return np.hstack(results)
 
 
-def _permtest_pearson(grad_map, metamaps, spinsamples):
+def _permtest_pearson(grad_map, metamaps, spinsamples=None):
     """Permutation test for Pearson correlation."""
     # Calculate true correlations
-    n_perm = spinsamples.shape[1]
     corrs = pearson(grad_map, metamaps)
 
-    # Calculate null correlations
-    grad_map_null = grad_map[spinsamples]
-    corrs_null = [pearson(grad_map_null[:, p_i], metamaps) for p_i in range(n_perm)]
+    if spinsamples is not None:
+        # Calculate null correlations
+        n_perm = spinsamples.shape[1]
+        grad_map_null = grad_map[spinsamples]
+        corrs_null = [pearson(grad_map_null[:, p_i], metamaps) for p_i in range(n_perm)]
 
-    # Calculate p-values
-    n_extreme_corrs = np.sum(np.abs(corrs_null) >= np.abs(corrs), axis=0)
-    pvals = n_extreme_corrs / (n_perm + 1)
-    corr_pvals = fdr(pvals)
+        # Calculate p-values
+        n_extreme_corrs = np.sum(np.abs(corrs_null) >= np.abs(corrs), axis=0)
+        pvals = n_extreme_corrs / (n_perm + 1)
+        corr_pvals = fdr(pvals)
+
+    else:
+        pvals, corr_pvals = pd.DataFrame(), pd.DataFrame()
 
     return corrs, pvals, corr_pvals

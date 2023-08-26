@@ -23,7 +23,7 @@ from gradec.fetcher import (
 )
 from gradec.model import _get_counts, annotate_lda
 from gradec.stats import _permtest_pearson
-from gradec.transform import _mni152_to_fslr
+from gradec.transform import _vol_to_surf
 from gradec.utils import _check_ncores, _conform_features, get_data_dir
 
 
@@ -61,9 +61,21 @@ def _get_dataset(dset_nm, data_dir):
 class Decoder(metaclass=ABCMeta):
     """Base class for decoders in :mod:`~gradec.decode`."""
 
-    def __init__(self, feature_group=None, use_fetchers=True, data_dir=None, n_cores=1):
+    def __init__(
+        self,
+        space="fsLR",
+        density="32k",
+        feature_group=None,
+        use_fetchers=True,
+        calc_pvals=True,
+        data_dir=None,
+        n_cores=1,
+    ):
+        self.space = space
+        self.density = density
         self.feature_group = feature_group
         self.use_fetchers = use_fetchers
+        self.calc_pvals = calc_pvals
         self.data_dir = op.abspath(data_dir) if data_dir else op.abspath(".")
         self.neuromaps_dir = get_data_dir(op.join(self.data_dir, "neuromaps"))
         self.n_cores = _check_ncores(n_cores)
@@ -87,23 +99,52 @@ class Decoder(metaclass=ABCMeta):
         self.dset_nm = dset_nm
 
         if self.use_fetchers:
-            metamaps_fslr = _fetch_metamaps(self.dset_nm, self.model_nm, self.data_dir)
-            features = _fetch_features(self.dset_nm, self.model_nm, self.data_dir)
+            metamaps_surf = _fetch_metamaps(
+                self.dset_nm,
+                self.model_nm,
+                space=self.space,
+                density=self.density,
+                data_dir=self.data_dir,
+            )
+            features = _fetch_features(self.dset_nm, self.model_nm, data_dir=self.data_dir)
+
         else:
             self.dset = dset or _get_dataset(dset_nm, self.data_dir)
             metamaps = self._train_decoder()
 
-            metamaps_fslr = _mni152_to_fslr(metamaps, neuromaps_dir=self.neuromaps_dir)
+            metamaps_surf = _vol_to_surf(
+                metamaps,
+                space=self.space,
+                density=self.density,
+                neuromaps_dir=self.neuromaps_dir,
+            )
             features = self._get_features()
+
             # This feature is desabled for now because it takes too long.
-            # spinsamples_fslr = _gen_spinsamples(self.neuromaps_dir, self.n_samples, self.n_cores)
+            """
+            if self.calc_pvals:
+                spinsamples_surf = _gen_spinsamples(
+                    self.space,
+                    self.density,
+                    self.neuromaps_dir,
+                    self.n_samples,
+                    self.n_cores,
+                )
+            """
 
-        spinsamples_fslr = _fetch_spinsamples(self.n_samples, self.data_dir)
+        if self.calc_pvals:
+            spinsamples_surf = _fetch_spinsamples(
+                n_samples=self.n_samples,
+                space=self.space,
+                density=self.density,
+                data_dir=self.data_dir,
+            )
+            self.spinsamples_ = spinsamples_surf
+        else:
+            self.spinsamples_ = None
 
-        self.maps_ = metamaps_fslr
+        self.maps_ = metamaps_surf
         self.features_ = _conform_features(features, self.model_nm, self.n_top_words)
-
-        self.spinsamples_ = spinsamples_fslr
 
 
 class CorrelationDecoder(Decoder):
@@ -139,7 +180,11 @@ class CorrelationDecoder(Decoder):
             data = np.array(results).T
             data_df = pd.DataFrame(index=self.features_, data=data)
             data_df.index.name = "feature"
-            data_df_lst.append(data_df)
+
+            if self.calc_pvals:
+                data_df_lst.append(data_df)
+            else:
+                return data_df
 
         return data_df_lst
 
