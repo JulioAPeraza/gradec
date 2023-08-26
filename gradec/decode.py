@@ -178,7 +178,7 @@ class CorrelationDecoder(Decoder):
         data_df_lst = []
         for results in results_lst:
             data = np.array(results).T
-            data_df = pd.DataFrame(index=self.features_, columns=["r"], data=data)
+            data_df = pd.DataFrame(index=self.features_, data=data)
             data_df.index.name = "feature"
 
             if self.calc_pvals:
