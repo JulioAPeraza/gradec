@@ -38,7 +38,16 @@ def _get_twfrequencies(dset_nm, model_nm, n_top_terms, data_dir=None):
     return frequencies_lst
 
 
-def plot_radar(corrs, features, model_nm, fig=None, ax=None, out_fig=None):
+def plot_radar(
+    corrs,
+    features,
+    model_nm,
+    cmap="YlOrRd",
+    n_top_terms=3,
+    fig=None,
+    ax=None,
+    out_fig=None,
+):
     """Plot radar chart."""
     n_rows = min(len(corrs), 10)
     angle_zero = 0
@@ -54,7 +63,7 @@ def plot_radar(corrs, features, model_nm, fig=None, ax=None, out_fig=None):
     features = features[:n_rows]
     angles = [(angle_zero + (n / float(n_rows) * 2 * np.pi)) for n in range(n_rows)]
     if model_nm in ["lda", "gclda"]:
-        features = ["\n".join(feature.split("_")[1:]).replace(" ", "\n") for feature in features]
+        features = ["\n".join(feature[:n_top_terms]).replace(" ", "\n") for feature in features]
     else:
         features = [feature.replace(" ", "\n") for feature in features]
 
@@ -62,9 +71,9 @@ def plot_radar(corrs, features, model_nm, fig=None, ax=None, out_fig=None):
 
     # Define color scheme
     plt.rcParams["text.color"] = "#1f1f1f"
-    cmap = cm.get_cmap("YlOrRd")
+    cmap_ = cm.get_cmap(cmap)
     norm = plt.Normalize(vmin=corrs.min(), vmax=corrs.max())
-    colors = cmap(norm(corrs))
+    colors = cmap_(norm(corrs))
 
     # Plot radar
     if fig is None and ax is None:
@@ -113,8 +122,23 @@ def plot_radar(corrs, features, model_nm, fig=None, ax=None, out_fig=None):
     plt.close()
 
 
-def plot_cloud(corrs, features, frequencies, model_nm, dpi=100, fig=None, ax=None, out_fig=None):
+def plot_cloud(
+    corrs,
+    features,
+    dset_nm,
+    model_nm,
+    cmap="YlOrRd",
+    n_top_terms=3,
+    dpi=100,
+    fig=None,
+    ax=None,
+    out_fig=None,
+    data_dir=None,
+):
     """Plot word cloud."""
+    features = [feature[:n_top_terms] for feature in features]
+    frequencies = _get_twfrequencies(dset_nm, model_nm, n_top_terms, data_dir=data_dir)
+
     frequencies_dict = {}
     if model_nm in ["lda", "gclda"]:
         for corr, features, frequency in zip(corrs, features, frequencies):
@@ -135,7 +159,7 @@ def plot_cloud(corrs, features, frequencies, model_nm, dpi=100, fig=None, ax=Non
         height=hight_ * dpi,
         background_color="white",
         random_state=0,
-        colormap="YlOrRd",
+        colormap=cmap,
     )
     wc.generate_from_frequencies(frequencies=frequencies_dict)
     ax.imshow(wc)
