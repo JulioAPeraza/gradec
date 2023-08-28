@@ -73,6 +73,8 @@ OSF_DICT = {
     "source-vasa2018_desc-null1000_space-fsaverage_density-164k_spinsamples.npz": "e956f",  # Updt
     "gclda_neurosynth_model.pkl.gz": "bg8ef",
     "gclda_neuroquery_model.pkl.gz": "vsm65",
+    "lda_neurosynth_model.pkl.gz": "3kgfe",
+    "lda_neuroquery_model.pkl.gz": "wevdn",
     "hcp-s1200_gradients.npy": "t95gk",
     "principal_gradient.npy": "5th7c",
     "neuroquery_counts": "p39mg",
