@@ -239,3 +239,37 @@ def _conform_features(features, model_nm, n_top_words):
         return [f"{i+1}_{'_'.join(feature[:n_top_words])}" for i, feature in enumerate(features)]
     else:
         return [feature[0] for feature in features]
+
+
+def _decoding_filter(
+    corrs_df,
+    features,
+    classification,
+    freq_by_topic=None,
+    class_by_topic=None,
+    class_to_keep=["Functional"],
+):
+    """Filter decoding results by classification."""
+    keep = np.array([c_i for c_i, class_ in enumerate(classification) if class_ in class_to_keep])
+    filtered_df = corrs_df.iloc[keep]
+
+    if freq_by_topic is None and class_by_topic is None:
+        filtered_features = np.array(features)[keep]
+        return filtered_df, list(filtered_features)
+
+    filtered_features = []
+    filtered_frequencies = []
+    for features_wtt, frequencies_wtt, class_wtt, class_ in zip(
+        features, freq_by_topic, class_by_topic, classification
+    ):
+        keep_wtt = np.array(
+            [c_i for c_i, sub_class in enumerate(class_wtt) if sub_class in class_to_keep]
+        )
+
+        if class_ in class_to_keep:
+            features_to_keep = np.array(features_wtt)[keep_wtt]
+            frequencies_to_keep = np.array(frequencies_wtt)[keep_wtt]
+            filtered_features.append(list(features_to_keep))
+            filtered_frequencies.append(list(frequencies_to_keep))
+
+    return filtered_df, filtered_features, filtered_frequencies
