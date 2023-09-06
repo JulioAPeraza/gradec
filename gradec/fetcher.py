@@ -17,6 +17,8 @@ from gradec.utils import get_data_dir
 OSF_URL = "https://osf.io/{}/download"
 OSF_DICT = {
     "source-neuroquery_desc-gclda_features.csv": "trcxs",
+    "source-neuroquery_desc-gclda_frequencies.csv": "kcem9",
+    "source-neuroquery_desc-gclda_classification.csv": "93dvg",
     "source-neuroquery_desc-gclda_space-civet_density-41k_metamaps.npz": "qbn7g",
     "source-neuroquery_desc-gclda_space-fsLR_density-32k_metamaps.npz": "ey6cw",
     "source-neuroquery_desc-gclda_space-fsLR_density-164k_metamaps.npz": "4erpq",
@@ -25,6 +27,8 @@ OSF_DICT = {
     "source-neuroquery_desc-gclda_space-fsaverage_density-41k_metamaps.npz": "ca2hp",
     "source-neuroquery_desc-gclda_space-fsaverage_density-164k_metamaps.npz": "4ne7f",
     "source-neuroquery_desc-lda_features.csv": "u68w7",
+    "source-neuroquery_desc-lda_frequencies.csv": "ygpxf",
+    "source-neuroquery_desc-lda_classification.csv": "mtwvc",
     "source-neuroquery_desc-lda_space-civet_density-41k_metamaps.npz": "74trb",
     "source-neuroquery_desc-lda_space-fsLR_density-32k_metamaps.npz": "k4xza",
     "source-neuroquery_desc-lda_space-fsLR_density-164k_metamaps.npz": "wvznp",
@@ -33,6 +37,7 @@ OSF_DICT = {
     "source-neuroquery_desc-lda_space-fsaverage_density-10k_metamaps.npz": "qwb5u",
     "source-neuroquery_desc-lda_space-fsaverage_density-164k_metamaps.npz": "qzhrn",
     "source-neuroquery_desc-term_features.csv": "xtjna",
+    "source-neuroquery_desc-term_classification.csv": "ypqzx",
     "source-neuroquery_desc-term_space-civet_density-41k_metamaps.npz": "vw9fr",
     "source-neuroquery_desc-term_space-fsLR_density-32k_metamaps.npz": "38fh4",
     "source-neuroquery_desc-term_space-fsLR_density-164k_metamaps.npz": "",  # Updt
@@ -41,6 +46,8 @@ OSF_DICT = {
     "source-neuroquery_desc-term_space-fsaverage_density-41k_metamaps.npz": "9xsqb",
     "source-neuroquery_desc-term_space-fsaverage_density-164k_metamaps.npz": "",  # Updt
     "source-neurosynth_desc-gclda_features.csv": "jcrkd",
+    "source-neurosynth_desc-gclda_frequencies.csv": "48hbz",
+    "source-neurosynth_desc-gclda_classification.csv": "p7nd9",
     "source-neurosynth_desc-gclda_space-civet_density-41k_metamaps.npz": "swp3c",
     "source-neurosynth_desc-gclda_space-fsLR_density-32k_metamaps.npz": "hwdft",
     "source-neurosynth_desc-gclda_space-fsLR_density-164k_metamaps.npz": "qzyvj",
@@ -49,6 +56,8 @@ OSF_DICT = {
     "source-neurosynth_desc-gclda_space-fsaverage_density-41k_metamaps.npz": "dw3t9",
     "source-neurosynth_desc-gclda_space-fsaverage_density-164k_metamaps.npz": "mw2pa",
     "source-neurosynth_desc-lda_features.csv": "ve3nj",
+    "source-neurosynth_desc-lda_frequencies.csv": "485je",
+    "source-neurosynth_desc-lda_classification.csv": "9mrxb",
     "source-neurosynth_desc-lda_space-civet_density-41k_metamaps.npz": "86u59",
     "source-neurosynth_desc-lda_space-fsLR_density-32k_metamaps.npz": "9ftkm",
     "source-neurosynth_desc-lda_space-fsLR_density-164k_metamaps.npz": "bxefz",
@@ -57,6 +66,7 @@ OSF_DICT = {
     "source-neurosynth_desc-lda_space-fsaverage_density-41k_metamaps.npz": "dbv4z",
     "source-neurosynth_desc-lda_space-fsaverage_density-164k_metamaps.npz": "7rw8c",
     "source-neurosynth_desc-term_features.csv": "hyjrk",
+    "source-neurosynth_desc-term_classification.csv": "sd4wy",
     "source-neurosynth_desc-term_space-civet_density-41k_metamaps.npz": "rwxta",
     "source-neurosynth_desc-term_space-fsLR_density-32k_metamaps.npz": "ju2tk",
     "source-neurosynth_desc-term_space-fsLR_density-164k_metamaps.npz": "dzm39",
@@ -169,6 +179,99 @@ def _fetch_features(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tr
 
     df = pd.read_csv(features_fn)
     return df.values.tolist()
+
+
+def _fetch_frequencies(dset_nm, model_nm, data_dir=None, overwrite=False, resume=True, verbose=1):
+    """Fetch frequencies from OSF.
+
+    Parameters
+    ----------
+    dset_nm : :obj:`str`
+        Name of dataset.
+    model_nm : :obj:`str`
+        Name of model.
+    data_dir : :obj:`pathlib.Path` or :obj:`str`, optional
+        Path where data should be downloaded. By default,
+        files are downloaded in home directory
+    resume : :obj:`bool`, optional
+        Whether to resume download of a partly-downloaded file.
+        Default=True.
+    verbose : :obj:`int`, optional
+        Verbosity level (0 means no message).
+        Default=1.
+
+    Returns
+    -------
+    :class:`list` of list
+        List of frequency values.
+    """
+    data_dir = get_data_dir(data_dir)
+    dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
+
+    filename = f"source-{dset_nm}_desc-{model_nm}_frequencies.csv"
+    url = _get_osf_url(filename)
+
+    features_fn = _my_fetch_file(
+        dec_dir,
+        filename,
+        url,
+        overwrite=overwrite,
+        resume=resume,
+        verbose=verbose,
+    )
+
+    df = pd.read_csv(features_fn)
+    return df.values.tolist()
+
+
+def _fetch_classification(
+    dset_nm,
+    model_nm,
+    data_dir=None,
+    overwrite=False,
+    resume=True,
+    verbose=1,
+):
+    """Fetch classification from OSF.
+
+    Parameters
+    ----------
+    dset_nm : :obj:`str`
+        Name of dataset.
+    model_nm : :obj:`str`
+        Name of model.
+    data_dir : :obj:`pathlib.Path` or :obj:`str`, optional
+        Path where data should be downloaded. By default,
+        files are downloaded in home directory
+    resume : :obj:`bool`, optional
+        Whether to resume download of a partly-downloaded file.
+        Default=True.
+    verbose : :obj:`int`, optional
+        Verbosity level (0 means no message).
+        Default=1.
+
+    Returns
+    -------
+    :class:`list` of list
+        List of classification values.
+    """
+    data_dir = get_data_dir(data_dir)
+    dec_dir = get_data_dir(os.path.join(data_dir, "decoding"))
+
+    filename = f"source-{dset_nm}_desc-{model_nm}_classification.csv"
+    url = _get_osf_url(filename)
+
+    features_fn = _my_fetch_file(
+        dec_dir,
+        filename,
+        url,
+        overwrite=overwrite,
+        resume=resume,
+        verbose=verbose,
+    )
+
+    df = pd.read_csv(features_fn, index_col="Classification")
+    return df.index.tolist(), df.values.tolist()
 
 
 def _fetch_metamaps(
