@@ -125,7 +125,7 @@ def plot_radar(
 def plot_cloud(
     corrs,
     features,
-    dset_nm,
+    frequencies,
     model_nm,
     cmap="YlOrRd",
     n_top_terms=3,
@@ -137,10 +137,11 @@ def plot_cloud(
 ):
     """Plot word cloud."""
     features = [feature[:n_top_terms] for feature in features]
-    frequencies = _get_twfrequencies(dset_nm, model_nm, n_top_terms, data_dir=data_dir)
 
     frequencies_dict = {}
     if model_nm in ["lda", "gclda"]:
+        frequencies = [frequencie[:n_top_terms] for frequencie in frequencies]
+
         for corr, features, frequency in zip(corrs, features, frequencies):
             for word, freq in zip(features, frequency):
                 if word not in frequencies_dict:
@@ -172,7 +173,7 @@ def plot_cloud(
     if out_fig is None:
         return fig
 
-    fig.savefig(out_fig, bbox_inches="tight", dpi=dpi)
+    fig.savefig(out_fig, bbox_inches="tight")
     plt.close()
 
 
@@ -186,6 +187,7 @@ def plot_surf_maps(
     color_range=None,
     threshold_=None,
     data_dir=None,
+    out_fig=None,
 ):
     """Plot surface maps."""
     data_dir = get_data_dir(data_dir)
@@ -219,4 +221,8 @@ def plot_surf_maps(
     if title is not None:
         fig.axes[0].set_title(title, pad=-3)
 
-    return fig
+    if out_fig is None:
+        return fig
+
+    fig.savefig(out_fig, bbox_inches="tight")
+    plt.close()
