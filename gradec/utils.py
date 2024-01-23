@@ -245,16 +245,22 @@ def _decoding_filter(
     corrs_df,
     features,
     classification,
+    pos_corr=True,
     freq_by_topic=None,
     class_by_topic=None,
     class_to_keep=["Functional"],
 ):
     """Filter decoding results by classification."""
     keep = np.array([c_i for c_i, class_ in enumerate(classification) if class_ in class_to_keep])
+
+    if pos_corr:
+        keep = np.intersect1d(keep, np.where(corrs_df > 0)[0])
+
     filtered_df = corrs_df.iloc[keep]
 
     if freq_by_topic is None and class_by_topic is None:
-        filtered_features = np.array(features)[keep]
+        features_flat = [item for sublist in features for item in sublist]
+        filtered_features = np.array(features_flat)[keep]
         return filtered_df, list(filtered_features)
 
     filtered_features = []

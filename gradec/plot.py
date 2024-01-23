@@ -125,21 +125,19 @@ def plot_radar(
 def plot_cloud(
     corrs,
     features,
-    frequencies,
     model_nm,
+    frequencies=None,
     cmap="YlOrRd",
     n_top_terms=3,
     dpi=100,
     fig=None,
     ax=None,
     out_fig=None,
-    data_dir=None,
 ):
     """Plot word cloud."""
-    features = [feature[:n_top_terms] for feature in features]
-
     frequencies_dict = {}
     if model_nm in ["lda", "gclda"]:
+        features = [feature[:n_top_terms] for feature in features]
         frequencies = [frequencie[:n_top_terms] for frequencie in frequencies]
 
         for corr, features, frequency in zip(corrs, features, frequencies):
@@ -152,8 +150,11 @@ def plot_cloud(
                 frequencies_dict[word] = corr
 
     with_, hight_ = 9, 5
-    if fig is None and ax is None:
-        fig, ax = plt.subplots(figsize=(with_, hight_))
+    if fig is None:
+        if ax is None:
+            fig, ax = plt.subplots(figsize=(with_, hight_))
+        else:
+            fig, _ = plt.subplots(figsize=(with_, hight_))
 
     wc = WordCloud(
         width=with_ * dpi,
