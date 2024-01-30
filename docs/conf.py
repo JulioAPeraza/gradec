@@ -32,11 +32,6 @@ release = "0.1.0"
 sys.path.insert(0, os.path.abspath(os.path.pardir))
 import gradec  # noqa
 
-# The short X.Y version
-version = gradec.__version__
-# The full version, including alpha/beta/rc tags
-release = gradec.__version__
-
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
