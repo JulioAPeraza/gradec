@@ -37,6 +37,17 @@ Homepage = "https://github.com/JulioAPeraza/gradec"
 Documentation = "https://gradec.readthedocs.io/en/latest/"
 
 [project.optional-dependencies]
+doc = [
+    "m2r",
+    "pydot >= 1.2.3",
+    "recommonmark",
+    "sphinx >= 2.0",
+    "sphinx-argparse",
+    "sphinx-copybutton",
+    "sphinx-gallery",
+    "sphinx_rtd_theme>=0.5.2",
+    "sphinxcontrib-bibtex",
+]
 dev = ["black", "pre-commit", "isort", "flake8-pyproject"]
 # For testing of oldest usable versions of dependencies.
 min = ["nimare==0.1.0"]
