@@ -1,4 +1,5 @@
 """Fetch data."""
+
 import gzip
 import hashlib
 import os

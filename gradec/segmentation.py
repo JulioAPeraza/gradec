@@ -1,4 +1,5 @@
 """Segmentation module."""
+
 from abc import ABCMeta
 
 import numpy as np
