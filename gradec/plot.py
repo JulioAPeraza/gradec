@@ -129,6 +129,8 @@ def plot_cloud(
     frequencies=None,
     cmap="YlOrRd",
     n_top_terms=3,
+    width=9,
+    height=5,
     dpi=100,
     fig=None,
     ax=None,
@@ -149,16 +151,15 @@ def plot_cloud(
             if word not in frequencies_dict:
                 frequencies_dict[word] = corr
 
-    with_, hight_ = 9, 5
     if fig is None:
         if ax is None:
-            fig, ax = plt.subplots(figsize=(with_, hight_))
+            fig, ax = plt.subplots(figsize=(width, height))
         else:
-            fig, _ = plt.subplots(figsize=(with_, hight_))
+            fig, _ = plt.subplots(figsize=(width, height))
 
     wc = WordCloud(
-        width=with_ * dpi,
-        height=hight_ * dpi,
+        width=width * dpi,
+        height=height * dpi,
         background_color="white",
         random_state=0,
         colormap=cmap,
