@@ -57,6 +57,7 @@ extensions = [
     "sphinx_copybutton",  # for copying code snippets
     "sphinx_gallery.gen_gallery",  # example gallery
     "sphinxarg.ext",  # argparse
+    "sphinx.ext.viewcode",
     "sphinxcontrib.bibtex",  # for foot-citations
     "recommonmark",  # markdown parser
     "matplotlib.sphinxext.plot_directive",
@@ -208,6 +209,7 @@ sphinx_gallery_conf = {
     "thumbnail_size": (250, 250),
     "remove_config_comments": True,
     "download_all_examples": False,
+    "image_scrapers": ("matplotlib"),
 }
 
 # Generate the plots for the gallery
