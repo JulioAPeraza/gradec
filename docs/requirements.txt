@@ -1,1 +1,2 @@
 vtk>=8.1.0
+mesalib
