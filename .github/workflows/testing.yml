@@ -6,7 +6,7 @@ on:
       - "main"
   pull_request:
     branches:
-      - '*'
+      - "*"
 
 concurrency:
   group: testing-${{ github.ref }}
@@ -26,8 +26,8 @@ jobs:
       - id: result_step
         uses: mstachniuk/ci-skip@master
         with:
-          commit-filter: '[skip ci];[ci skip];[skip github]'
-          commit-filter-separator: ';'
+          commit-filter: "[skip ci];[ci skip];[skip github]"
+          commit-filter-separator: ";"
 
   run_unit_tests:
     name: Unit tests
@@ -35,24 +35,31 @@ jobs:
     if: ${{ needs.check_skip.outputs.skip == 'false' }}
     runs-on: ${{ matrix.os }}
     strategy:
-        fail-fast: false
-        matrix:
-            os: ["ubuntu-latest", "macos-latest"]
-            python-version: ["3.8", "3.9", "3.10"]
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest", "macos-latest"]
+        python-version: ["3.8", "3.9", "3.10"]
 
     defaults:
       run:
         shell: bash
     steps:
       - uses: actions/checkout@v2
-      - name: 'Set up python'
+      - name: "Set up python"
         uses: actions/setup-python@v2
         with:
-            python-version: ${{ matrix.python-version }}
-      - name: 'Install Gradec'
+          python-version: ${{ matrix.python-version }}
+      - name: "Install Gradec"
         shell: bash {0}
         run: pip install -e .[tests]
-      - name: 'Run tests'
+      - name: "Run tests"
+        if: matrix.os == 'ubuntu-latest'
+        uses: GabrielBB/xvfb-action@v1.5
+        with:
+          options: -screen 0 1600x1200x24
+          run: make unittest
+      - name: "Run tests"
+        if: matrix.os == 'macos-latest'
         shell: bash {0}
         run: make unittest
       - name: Upload artifacts
@@ -68,23 +75,23 @@ jobs:
     if: ${{ needs.check_skip.outputs.skip == 'false' }}
     runs-on: ${{ matrix.os }}
     strategy:
-        fail-fast: false
-        matrix:
-            os: ["ubuntu-latest"]
-            python-version: ["3.8"]
+      fail-fast: false
+      matrix:
+        os: ["ubuntu-latest"]
+        python-version: ["3.8"]
     defaults:
       run:
         shell: bash
     steps:
       - uses: actions/checkout@v2
-      - name: 'Set up python'
+      - name: "Set up python"
         uses: actions/setup-python@v2
         with:
-            python-version: 3.8
-      - name: 'Install Gradec'
+          python-version: 3.8
+      - name: "Install Gradec"
         shell: bash {0}
         run: pip install -e .[minimum,tests]
-      - name: 'Run tests'
+      - name: "Run tests"
         shell: bash {0}
         run: make unittest
       - name: Upload artifacts
@@ -96,7 +103,7 @@ jobs:
 
   upload_to_codecov:
     name: Upload coverage
-    needs: [run_unit_tests,run_unit_tests_with_minimum_dependencies]
+    needs: [run_unit_tests, run_unit_tests_with_minimum_dependencies]
     runs-on: "ubuntu-latest"
     steps:
       - name: Checkout
