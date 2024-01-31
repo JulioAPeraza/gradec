@@ -1,4 +1,5 @@
 """Generate fixtures for tests."""
+
 import os
 
 import pytest

@@ -1,4 +1,5 @@
 """Tests for decode."""
+
 import numpy as np
 
 from gradec.decode import GCLDADecoder, LDADecoder, TermDecoder

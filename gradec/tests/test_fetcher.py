@@ -1,4 +1,5 @@
 """Test fetching data from OSF."""
+
 import numpy as np
 import pytest
 from nimare.annotate import GCLDAModel

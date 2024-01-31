@@ -1,4 +1,5 @@
 """Stats module for gradec."""
+
 import nibabel as nib
 import numpy as np
 import pandas as pd
