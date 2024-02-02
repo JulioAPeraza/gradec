@@ -16,10 +16,9 @@ import sys
 from datetime import datetime
 
 import brainspace
-from brainspace.plotting.sphinx_gallery_scrapper import _get_sg_image_scraper
 from sphinx_gallery.sorting import FileNameSortKey
 
-brainspace.OFF_SCREEN = True  # off screen rendering for examples
+brainspace.OFF_SCREEN = False  # off screen rendering for examples
 
 # -- Project information -----------------------------------------------------
 
