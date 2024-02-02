@@ -18,12 +18,17 @@ from gradec.fetcher import _fetch_principal_gradients
 
 principal_gradient = _fetch_principal_gradients()
 
+
+import brainspace
+
 ###############################################################################
 # Plot principal gradient
 # ``````````````````````````````````````````````````````````````````````````````
 from surfplot.utils import add_fslr_medial_wall
 
 from gradec.plot import plot_surf_maps
+
+brainspace.OFF_SCREEN = True
 
 full_vertices = 64984
 hemi_vertices = full_vertices // 2
