@@ -130,7 +130,6 @@ sphinx_gallery_conf = {
     "filename_pattern": "/[0-9]+_plot_",
     "gallery_dirs": "auto_examples",
     "thumbnail_size": (250, 250),
-    # 'plot_gallery': 'False',
     "image_scrapers": ("matplotlib", _get_sg_image_scraper()),
     "within_subsection_order": FileNameSortKey,
     "download_all_examples": False,
