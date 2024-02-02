@@ -1,4 +1,5 @@
 """Decode module."""
+
 import os.path as op
 from abc import ABCMeta, abstractmethod
 
@@ -206,7 +207,7 @@ class TermDecoder(CorrelationDecoder):
             frequency_threshold=frequency_threshold,
             meta_estimator=MKDAChi2,
             feature_group=self.feature_group,
-            target_image="z_desc-specificity",
+            target_image="z_desc-association",
             n_cores=self.n_cores,
         )
         decoder.fit(self.dset)
@@ -275,7 +276,7 @@ class LDADecoder(CorrelationDecoder):
             frequency_threshold=frequency_threshold,
             meta_estimator=MKDAChi2,
             feature_group=new_feature_group,
-            target_image="z_desc-specificity",
+            target_image="z_desc-association",
             n_cores=self.n_cores,
         )
         decoder.fit(self.dset)

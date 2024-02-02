@@ -1,4 +1,5 @@
 """Models for Gradec."""
+
 import os.path as op
 
 import numpy as np

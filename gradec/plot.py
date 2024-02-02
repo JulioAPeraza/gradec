@@ -1,4 +1,5 @@
 """Plot module for gradec."""
+
 import math
 import os
 
