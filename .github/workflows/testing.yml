@@ -92,8 +92,11 @@ jobs:
         shell: bash {0}
         run: pip install -e .[minimum,tests]
       - name: "Run tests"
-        shell: bash {0}
-        run: make unittest
+        if: matrix.os == 'ubuntu-latest'
+        uses: GabrielBB/xvfb-action@v1.5
+        with:
+          options: -screen 0 1600x1200x24
+          run: make unittest
       - name: Upload artifacts
         uses: actions/upload-artifact@v2
         with:
