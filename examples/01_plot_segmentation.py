@@ -19,16 +19,12 @@ from gradec.fetcher import _fetch_principal_gradients
 principal_gradient = _fetch_principal_gradients()
 
 
-import brainspace
-
 ###############################################################################
 # Plot principal gradient
 # ``````````````````````````````````````````````````````````````````````````````
 from surfplot.utils import add_fslr_medial_wall
 
 from gradec.plot import plot_surf_maps
-
-brainspace.OFF_SCREEN = True
 
 full_vertices = 64984
 hemi_vertices = full_vertices // 2
@@ -44,7 +40,7 @@ fig.show()
 # ``````````````````````````````````````````````````````````````````````````````
 from gradec.segmentation import KMeansSegmentation
 
-segmentation = KMeansSegmentation(5)
+segmentation = KMeansSegmentation(2)
 segmentation.fit(principal_gradient)
 grad_maps = segmentation.transform()
 
@@ -54,5 +50,5 @@ grad_maps = segmentation.transform()
 for grad_map in grad_maps:
     grad_map = add_fslr_medial_wall(grad_map)
     grad_map_lh, grad_map_rh = grad_map[:hemi_vertices], grad_map[hemi_vertices:full_vertices]
-    # fig = plot_surf_maps(grad_map_lh, grad_map_rh)
-    # fig.show()
+    fig = plot_surf_maps(grad_map_lh, grad_map_rh)
+    fig.show()
