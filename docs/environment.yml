@@ -16,3 +16,6 @@ dependencies:
   - netneurotools
   - surfplot
   - wordcloud
+  - pip
+  - pip:
+      - ..
