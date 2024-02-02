@@ -9,6 +9,11 @@ build:
   os: "ubuntu-20.04"
   tools:
     python: "3.10"
+  jobs:
+    post_create_environment:
+      - conda config --add channels conda-forge
+      - conda install mesalib --channel conda-forge --override-channels --freeze-installed
+      - conda install vtk --channel conda-forge --override-channels --freeze-installed
 
 # Build documentation in the docs/ directory with Sphinx
 sphinx:
