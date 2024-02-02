@@ -3,7 +3,7 @@
 import math
 import os
 
-import matplotlib.cm as cm
+import matplotlib.colormaps as cm
 import matplotlib.pyplot as plt
 import numpy as np
 from neuromaps.datasets import fetch_civet, fetch_fsaverage, fetch_fslr
