@@ -3,6 +3,7 @@
 import math
 import os
 
+import brainspace
 import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
@@ -13,6 +14,8 @@ from wordcloud import WordCloud
 
 from gradec.fetcher import _fetch_model
 from gradec.utils import get_data_dir
+
+brainspace.OFF_SCREEN = True
 
 
 def _get_twfrequencies(dset_nm, model_nm, n_top_terms, data_dir=None):
