@@ -3,9 +3,9 @@
 import math
 import os
 
-import matplotlib.cm as cm
 import matplotlib.pyplot as plt
 import numpy as np
+from matplotlib import colormaps
 from neuromaps.datasets import fetch_civet, fetch_fsaverage, fetch_fslr
 from surfplot import Plot
 from surfplot.utils import threshold
@@ -72,7 +72,7 @@ def plot_radar(
 
     # Define color scheme
     plt.rcParams["text.color"] = "#1f1f1f"
-    cmap_ = cm.get_cmap(cmap)
+    cmap_ = colormaps.get_cmap(cmap)
     norm = plt.Normalize(vmin=corrs.min(), vmax=corrs.max())
     colors = cmap_(norm(corrs))
 

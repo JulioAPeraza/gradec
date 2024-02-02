@@ -1,0 +1,15 @@
+name: gradec_env
+
+channels:
+  - conda-forge
+
+dependencies:
+  - python=3.9
+  - sphinx>=2.0
+  - sphinx_rtd_theme
+  - sphinx-gallery
+  - sphinx-gallery
+  - pip
+  - pip:
+      - ..
+      - sphinx_argparse
