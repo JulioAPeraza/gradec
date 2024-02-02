@@ -23,7 +23,7 @@ classifiers = [
     "Topic :: Scientific/Engineering",
 ]
 dependencies = [
-    "nimare",
+    "nimare>=0.2.1",
     "neuromaps",
     "scipy<1.8.0",   # temporary fix for netneurotools issue
     "netneurotools",
@@ -50,7 +50,7 @@ doc = [
 ]
 dev = ["black", "pre-commit", "isort", "flake8-pyproject"]
 # For testing of oldest usable versions of dependencies.
-min = ["nimare==0.1.0"]
+min = ["nimare==0.2.1"]
 test = [
     "coverage",
     "coveralls",
