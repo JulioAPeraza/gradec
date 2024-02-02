@@ -16,6 +16,8 @@ import sys
 from datetime import datetime
 
 import brainspace
+from brainspace.plotting.sphinx_gallery_scrapper import _get_sg_image_scraper
+from sphinx_gallery.sorting import FileNameSortKey
 
 brainspace.OFF_SCREEN = True  # off screen rendering for examples
 
@@ -123,16 +125,13 @@ intersphinx_mapping = {
     "neuromaps": ("https://netneurolab.github.io/neuromaps/", None),
 }
 
-from brainspace.plotting.sphinx_gallery_scrapper import _get_sg_image_scraper
-from sphinx_gallery.sorting import FileNameSortKey
-
 sphinx_gallery_conf = {
     "examples_dirs": "../examples",
     "filename_pattern": "/[0-9]+_plot_",
     "gallery_dirs": "auto_examples",
     "thumbnail_size": (250, 250),
     # 'plot_gallery': 'False',
-    "image_scrapers": ("matplotlib"),
+    "image_scrapers": ("matplotlib", _get_sg_image_scraper()),
     "within_subsection_order": FileNameSortKey,
     "download_all_examples": False,
 }
