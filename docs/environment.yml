@@ -9,7 +9,7 @@ dependencies:
   - sphinx_rtd_theme
   - sphinx-gallery
   - sphinx-gallery
-  - sphinx_argparse
   - pip
   - pip:
       - ..
+      - sphinx_argparse
