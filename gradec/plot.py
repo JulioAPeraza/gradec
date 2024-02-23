@@ -58,7 +58,7 @@ def plot_radar(
     corrs = np.array(corrs)
     sorted_indices = np.argsort(-corrs)
     corrs = corrs[sorted_indices]
-    features = np.array(features)[sorted_indices]
+    features = np.array(features, dtype=object)[sorted_indices]
 
     corrs = corrs[:n_rows]
     features = features[:n_rows]
