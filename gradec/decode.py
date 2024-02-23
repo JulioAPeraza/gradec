@@ -13,7 +13,6 @@ from nimare.decode.utils import weight_priors
 from nimare.extract import download_abstracts, fetch_neuroquery, fetch_neurosynth
 from nimare.io import convert_neurosynth_to_dataset
 from nimare.meta.cbma.mkda import MKDAChi2
-from nimare.utils import tqdm_joblib
 from tqdm.auto import tqdm
 
 from gradec.fetcher import (
@@ -168,13 +167,15 @@ class CorrelationDecoder(Decoder):
         out_df : :obj:`pandas.DataFrame`
             DataFrame with one row for each feature, an index named "feature", and one column: "r".
         """
-        with tqdm_joblib(tqdm(total=len(grad_maps))):
-            results_lst = zip(
-                *Parallel(n_jobs=self.n_cores)(
+        results_lst = tqdm(
+            zip(
+                *Parallel(return_as="generator", n_jobs=self.n_cores)(
                     delayed(_permtest_pearson)(grad_map, self.maps_, self.spinsamples_)
                     for grad_map in grad_maps
-                )
-            )
+                ),
+            ),
+            total=len(grad_maps),
+        )
 
         data_df_lst = []
         for results in results_lst:

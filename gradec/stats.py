@@ -7,7 +7,6 @@ from joblib import Parallel, delayed
 from netneurotools.stats import gen_spinsamples
 from neuromaps.datasets import fetch_atlas
 from nimare.stats import pearson
-from nimare.utils import tqdm_joblib
 from pymare.stats import fdr
 from tqdm.auto import tqdm
 
@@ -41,10 +40,15 @@ def _gen_spinsamples(space="fsLR", density="32k", neuromaps_dir=None, n_samples=
     hemi = np.hstack((np.zeros((coords_lh.shape[0],)), np.ones((coords_rh.shape[0],))))
     coords = np.vstack((coords_lh, coords_rh))
 
-    with tqdm_joblib(tqdm(total=n_samples)):
-        results = Parallel(n_jobs=n_cores)(
-            delayed(_gen_nullsamples)(coords, hemi, seed) for seed in range(n_samples)
+    results = [
+        r
+        for r in tqdm(
+            Parallel(return_as="generator", n_jobs=n_cores)(
+                delayed(_gen_nullsamples)(coords, hemi, seed) for seed in range(n_samples)
+            ),
+            total=n_samples,
         )
+    ]
 
     return np.hstack(results)
 
