@@ -261,8 +261,13 @@ def _decoding_filter(
 
     if freq_by_topic is None and class_by_topic is None:
         features_flat = [item for sublist in features for item in sublist]
-        filtered_features = np.array(features_flat)[keep]
+        filtered_features = np.array(features_flat, dtype=object)[keep]
         return filtered_df, list(filtered_features)
+
+    features = np.array(features, dtype=object)[keep]
+    freq_by_topic = np.array(freq_by_topic, dtype=object)[keep]
+    class_by_topic = np.array(class_by_topic, dtype=object)[keep]
+    classification = np.array(classification, dtype=object)[keep]
 
     filtered_features = []
     filtered_frequencies = []
