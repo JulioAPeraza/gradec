@@ -497,11 +497,14 @@ def _fetch_decoder(dset_nm, model_nm, data_dir=None, overwrite=False, resume=Tru
     return pickle.load(decoder_file)
 
 
-def _fetch_gradients(data_dir=None, overwrite=False, resume=True, verbose=1):
+def _fetch_gradients(cortical=False, data_dir=None, overwrite=False, resume=True, verbose=1):
     """Fetch gradients from OSF.
 
     Parameters
     ----------
+    cortical : :obj:`bool`, optional
+        Whether to fetch cortical or whole-brain gradients.
+        Default=False.
     data_dir : :obj:`pathlib.Path` or :obj:`str`, optional
         Path where data should be downloaded. By default,
         files are downloaded in home directory
@@ -517,6 +520,7 @@ def _fetch_gradients(data_dir=None, overwrite=False, resume=True, verbose=1):
     :obj:`numpy.ndarray`
         2D array of gradients.
     """
+    N_VERTICES = 59412  # Number of vertices in fsLR 32k space for HCP S1200
     data_dir = get_data_dir(data_dir)
     grad_dir = get_data_dir(os.path.join(data_dir, "gradient"))
 
@@ -531,8 +535,9 @@ def _fetch_gradients(data_dir=None, overwrite=False, resume=True, verbose=1):
         resume=resume,
         verbose=verbose,
     )
+    gradients = np.load(gradient_fn)
 
-    return np.load(gradient_fn)
+    return gradients[:N_VERTICES] if cortical else gradients
 
 
 def _fetch_principal_gradients(data_dir=None, overwrite=False, resume=True, verbose=1):

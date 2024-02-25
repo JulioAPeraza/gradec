@@ -6,6 +6,7 @@ from nimare.annotate import GCLDAModel
 
 from gradec.fetcher import (
     _fetch_features,
+    _fetch_gradients,
     _fetch_metamaps,
     _fetch_model,
     _fetch_neuroquery_counts,
@@ -80,3 +81,18 @@ def test_fetch_model(tmp_path_factory, dset_nm, model_nm):
 
     model = _fetch_model(dset_nm, model_nm, data_dir=tmpdir)
     assert isinstance(model, GCLDAModel)
+
+
+@pytest.mark.parametrize("cortical", [True, False], ids=["Cortical-Only", "Whole-Brain"])
+def test_fetch_gradients(tmp_path_factory, cortical):
+    """Test fetching gradients from OSF."""
+    tmpdir = tmp_path_factory.mktemp("test_fetch_gradients")
+
+    gradients = _fetch_gradients(cortical=cortical, data_dir=tmpdir)
+
+    if cortical:
+        assert isinstance(gradients, np.ndarray)
+        assert gradients.shape == (59412, 9)
+    else:
+        assert isinstance(gradients, np.ndarray)
+        assert gradients.shape == (91282, 9)
