@@ -126,7 +126,7 @@ intersphinx_mapping = {
 
 sphinx_gallery_conf = {
     "examples_dirs": "../examples",
-    "filename_pattern": "/[0-9]+_plot_",
+    "filename_pattern": "[0-9]+_plot_",
     "gallery_dirs": "auto_examples",
     "thumbnail_size": (250, 250),
     "image_scrapers": ("matplotlib"),

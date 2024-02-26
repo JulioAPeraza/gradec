@@ -54,7 +54,7 @@ for map_i, k_grad_map in enumerate(k_grad_maps):
         k_grad_map_rh,
         color_range=(0, 1),
         cmap="YlOrRd",
-        title=f"KMeans, segments={map_i}",
+        title=f"KMeans, segment {map_i+1}",
     )
     fig.show()
 
@@ -78,7 +78,7 @@ for map_i, p_grad_map in enumerate(p_grad_maps):
         p_grad_map_rh,
         color_range=(0, 1),
         cmap="YlOrRd",
-        title=f"PCT, segments={map_i}",
+        title=f"PCT, segment {map_i+1}",
     )
     fig.show()
 
@@ -100,15 +100,15 @@ k4_grad_maps = k4_segmentation.transform()
 
 for map_i, k4_grad_map in enumerate(k4_grad_maps):
     k4_grad_map = add_fslr_medial_wall(k4_grad_map)
-    k4_grad_map_lh, k3_grad_map_rh = (
+    k4_grad_map_lh, k4_grad_map_rh = (
         k4_grad_map[:hemi_vertices],
         k4_grad_map[hemi_vertices:full_vertices],
     )
     fig = plot_surf_maps(
         k4_grad_map_lh,
-        k3_grad_map_rh,
+        k4_grad_map_rh,
         color_range=(0, 1),
         cmap="YlOrRd",
-        title=f"KMeans, cluster={map_i}",
+        title=f"KMeans, cluster {map_i+1}",
     )
     fig.show()
