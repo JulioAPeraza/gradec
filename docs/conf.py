@@ -134,6 +134,9 @@ sphinx_gallery_conf = {
     "download_all_examples": False,
 }
 
+# Generate the plots for the gallery
+plot_gallery = True
+
 doctest_global_setup = """\
 import numpy as np
 np.random.seed(1234)\
