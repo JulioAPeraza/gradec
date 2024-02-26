@@ -41,18 +41,14 @@ at https://zenodo.org/record/8161766.
 
     # This is the Zenodo citation for version 0.0.1rc3.
     @software{peraza_2023_8161766,
-       author       = {Peraza, Julio A. and
-                       Kent, James D. and
-                       Salo, Taylor and
-                       De La Vega, Alejandro and
-                       Laird, Angela R.},
-       title        = {JulioAPeraza/gradec: 0.0.1rc3},
-       month        = jul,
-       year         = 2023,
-       publisher    = {Zenodo},
-       version      = {0.0.1rc3},
-       doi          = {10.5281/zenodo.8161766},
-       url          = {https://doi.org/10.5281/zenodo.8161766}
+       author = {Peraza, Julio A. and Kent, James D. and Salo, Taylor and De La Vega, Alejandro and Laird, Angela R.},
+       title = {JulioAPeraza/gradec: 0.0.1rc3},
+       month = jul,
+       year = 2023,
+       publisher = {Zenodo},
+       version = {0.0.1rc3},
+       doi = {10.5281/zenodo.8161766},
+       url = {https://doi.org/10.5281/zenodo.8161766}
     }
 
 .. toctree::
