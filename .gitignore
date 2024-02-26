@@ -29,3 +29,6 @@ docs/_build/
 docs/generated/
 docs/modules/
 docs/auto_examples/
+
+examples/decoding
+examples/neuromaps

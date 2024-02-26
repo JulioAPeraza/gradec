@@ -126,13 +126,16 @@ intersphinx_mapping = {
 
 sphinx_gallery_conf = {
     "examples_dirs": "../examples",
-    "filename_pattern": "/[0-9]+_plot_",
+    "filename_pattern": "[0-9]+_plot_",
     "gallery_dirs": "auto_examples",
     "thumbnail_size": (250, 250),
     "image_scrapers": ("matplotlib"),
     "within_subsection_order": FileNameSortKey,
     "download_all_examples": False,
 }
+
+# Generate the plots for the gallery
+plot_gallery = True
 
 doctest_global_setup = """\
 import numpy as np
