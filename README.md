@@ -1,5 +1,6 @@
 # Gradec
-A Python library for meta-analytic functional decoding of cortical gradient of functional 
+
+A Python library for meta-analytic functional decoding of cortical gradient of functional
 connectivity.
 
 [![Latest Version](https://img.shields.io/pypi/v/gradec.svg)](https://pypi.python.org/pypi/gradec/)
@@ -19,18 +20,20 @@ Please see our [installation instructions](https://gradec.readthedocs.io/en/stab
 for information on how to install gradec.
 
 ### Installation with pip
+
 ```
 pip install gradec
 ```
 
 ### Local installation (development version)
+
 ```
 pip install git+https://github.com/JulioAPeraza/gradec.git
 ```
 
 ## Citing gradec
 
-If you use gradec in your research, we recommend citing the Zenodo DOI associated with the gradec version you used.
+If you use gradec in your research, we recommend citing the Zenodo DOI associated with the gradec version you used, as well as the Imaging Neuroscience journal article: https://doi.org/10.1162/imag_a_00081.
 You can find the Zenodo DOI associated with each gradec release at https://zenodo.org/record/8161766.
 
 ## Contributing
