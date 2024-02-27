@@ -25,10 +25,10 @@ classifiers = [
 dependencies = [
     "nimare>=0.2.1",
     "neuromaps",
-    "scipy",
-    "netneurotools>=0.2.4",
+    "scipy<1.8.0",   # temporary fix for netneurotools issue
+    "netneurotools",
     "surfplot",
-    "wordcloud",            # for plotting
+    "wordcloud",     # for plotting
 ]
 dynamic = ["version"]
 
