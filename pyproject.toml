@@ -26,6 +26,7 @@ dependencies = [
     "nimare>=0.2.1",
     "neuromaps",
     "scipy",
+    "nilearn<=0.10.2",      # 0.10.3 breaks compatibility with nimare
     "netneurotools>=0.2.4",
     "surfplot",
     "wordcloud",            # for plotting
